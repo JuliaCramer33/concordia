@@ -1,0 +1,45 @@
+/* Minimal adjustments for on-page Navigation blocks */
+
+/* Scope to the specific block instance by aria-label to avoid side effects */
+.section-nav {
+  /* Tighten gaps when items wrap: ~15px horizontal, ~10px vertical */
+  .wp-block-navigation__container {
+    gap: .875rem .625rem !important;
+
+    li {
+      margin: 0;
+    }
+
+    /* Links: white, no default underline, add sweep underline via ::before */
+    .wp-block-navigation-item > a.wp-block-navigation-item__content {
+      color: #fff;
+      outline: none;
+      position: relative;
+      text-decoration: none;
+    }
+
+    .wp-block-navigation-item > a.wp-block-navigation-item__content::before {
+      background: currentColor;
+      bottom: -6px;
+      content: '';
+      height: 2px;
+      left: 0;
+      opacity: .9;
+      position: absolute;
+      right: 0;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .22s cubic-bezier(.4,0,.2,1);
+      width: 100%;
+      z-index: 0;
+    }
+
+    .wp-block-navigation-item > a.wp-block-navigation-item__content:hover::before,
+    .wp-block-navigation-item > a.wp-block-navigation-item__content:focus-visible::before,
+    .wp-block-navigation-item.current-menu-item > a.wp-block-navigation-item__content::before,
+    .wp-block-navigation-item > a.wp-block-navigation-item__content[aria-current='page']::before {
+      transform: scaleX(1);
+    }
+  }
+}
+

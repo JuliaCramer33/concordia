@@ -1,0 +1,18 @@
+.help {
+	margin-top: 8px !important;
+	margin-bottom: 0px;
+	font-size: 12px;
+	font-style: normal;
+	color: rgb(117, 117, 117);
+}
+
+.tabsTight :global(.components-tab-panel__tabs) {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.tabsTight :global(.components-tab-panel__tabs-item) {
+	padding: 4px 8px;
+	font-size: 11px;
+}

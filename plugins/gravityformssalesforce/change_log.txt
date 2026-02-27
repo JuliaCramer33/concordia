@@ -1,0 +1,6 @@
+### 1.1.0 | 2025-06-26
+- Updated "Connected to Salesforce account: account" UI to use the component library to ensure consistency with other add-ons.
+- AF: Updated process_feed() return value for compatibility with Gravity Forms 2.9.4, so the framework can save the feed status to the entry meta.
+
+### 1.0.0 | 2024-12-10
+- It's all new!

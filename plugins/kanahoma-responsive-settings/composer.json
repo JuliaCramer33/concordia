@@ -1,0 +1,30 @@
+{
+  "name": "kanahoma/responsive-settings",
+  "description": "Kanahoma Responsive Settings for Gutenberg",
+  "type": "project",
+  "license": "GPL-3.0",
+  "autoload": {
+    "classmap": [
+      "includes/"
+    ]
+  },
+  "authors": [
+    {
+      "name": "Daniel Post",
+      "email": "daniel@posty.studio"
+    }
+  ],
+  "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "wp-coding-standards/wpcs": "^2.3",
+    "phpcompatibility/php-compatibility": "^9.3",
+    "phpcompatibility/phpcompatibility-wp": "*",
+    "johnpbloch/wordpress": "^6.2"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "johnpbloch/wordpress-core-installer": true
+    }
+  }
+}

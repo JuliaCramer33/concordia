@@ -1,0 +1,228 @@
+.c-spotlights {
+  /* Keep all panels equal height via aspect ratio */
+  aspect-ratio: var(--spotlight-aspect, 5 / 2);
+  position: relative;
+
+  /* Columns container */
+  .wp-block-columns {
+    display: flex;
+    gap: var(--wp--preset--spacing--20, .5rem);
+    height: 100%;
+  }
+
+  /* Each panel (native column) */
+  .wp-block-column {
+    cursor: pointer;
+    display: flex;
+    flex: 1 1 0;
+    height: 100%;
+    transition: flex .35s ease, filter .2s ease, opacity .2s ease;
+  }
+
+  /* Inner cover should fill the panel */
+  .wp-block-cover {
+    height: 100%;
+    width: 100%;
+  }
+
+  .wp-block-cover__inner-container {
+    height: 100%;
+  }
+
+  /* Inactive vs active states */
+  .wp-block-column:not(.is-active) {
+    filter: grayscale(1);
+    flex: .6 1 0;
+    opacity: .85;
+  }
+
+  .wp-block-column.is-active,
+  .wp-block-column:focus-within {
+    filter: none;
+    flex: 2 1 0;
+    opacity: 1;
+  }
+
+  /* Hover hint */
+  .wp-block-column:hover {
+    filter: none;
+    opacity: 1;
+  }
+}
+
+/* -----------------------------------------------
+   Mobile-first alternative (opt-in):
+   Add class .c-spotlights--mf to test this version
+   without changing existing behavior above.
+   ----------------------------------------------- */
+.c-spotlights--mf {
+  aspect-ratio: auto;
+  height: var(--spotlight-row-height, 280px);
+  position: relative;
+  
+  --spotlight-peek: var(--wp--preset--spacing--20, .75rem);
+  --spotlight-gap: var(--wp--preset--spacing--20, .75rem);
+
+  .wp-block-columns {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: var(--spotlight-gap);
+    height: 100%;
+    overflow: auto hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .wp-block-columns::-webkit-scrollbar { display: none; }
+
+  .wp-block-column {
+    cursor: pointer;
+    display: flex;
+    flex: 0 0 calc(100% - (var(--spotlight-peek) + var(--spotlight-gap)));
+    height: 100%;
+    min-width: 0;
+    opacity: 1;
+    scroll-snap-align: start;
+    transition: flex .35s ease, filter .2s ease, opacity .2s ease;
+    width: auto !important;
+  }
+
+  .wp-block-cover,
+  .wp-block-cover__inner-container {
+    height: 100%;
+  }
+
+  .wp-block-column:hover { filter: none; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-spotlights--mf .wp-block-column { transition: none; }
+}
+
+@media (width >= 701px) {
+  .c-spotlights--mf {
+    aspect-ratio: var(--spotlight-aspect, 5 / 2);
+    height: auto;
+
+    .wp-block-columns {
+      display: flex;
+      flex-flow: row wrap;
+      gap: var(--wp--preset--spacing--20, .5rem);
+      height: 100%;
+      overflow: visible;
+      scroll-snap-type: none;
+    }
+
+    .wp-block-column {
+      flex: 1 1 0 !important;
+      min-width: auto;
+      scroll-snap-align: initial;
+    }
+
+    .wp-block-column:not(.is-active) {
+      filter: grayscale(1);
+      flex: .6 1 0 !important;
+      opacity: .85;
+    }
+
+    .wp-block-column.is-active,
+    .wp-block-column:focus-within {
+      filter: none;
+      flex: 2 1 0 !important;
+      opacity: 1;
+    }
+  }
+}
+
+/* Align inner content to bottom for interactive variant */
+.c-spotlights--interactive .c-spotlights__cover .wp-block-cover__inner-container {
+  align-items: flex-end;
+  display: flex;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .c-spotlights .wp-block-column { transition: none; }
+}
+
+/* Mobile: switch to horizontal, peeking, swipeable row */
+@media (width <= 700px) {
+  /* Replace aspect ratio with fixed row height and set mobile peek */
+  .c-spotlights { aspect-ratio: auto; height: var(--spotlight-row-height, 280px); --spotlight-peek: var(--wp--preset--spacing--20, .75rem); }
+
+  .c-spotlights .wp-block-columns {
+    display: flex !important;
+    flex-flow: row nowrap !important;
+    gap: var(--spotlight-gap);
+    height: 100%;
+    overflow: auto hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+
+    --spotlight-gap: var(--wp--preset--spacing--20, .75rem);
+  }
+
+  .c-spotlights .wp-block-column {
+    filter: none;
+    flex: 0 0 calc(100% - (var(--spotlight-peek) + var(--spotlight-gap)));
+    height: 100%;
+    min-width: 0;
+    opacity: 1;
+    scroll-snap-align: start;
+    width: auto !important; /* override core mobile 100% widths */
+  }
+
+  /* Stronger override against core mobile stacking rules */
+  .c-spotlights .wp-block-columns.is-not-stacked-on-mobile > .wp-block-column,
+  .c-spotlights .wp-block-columns > .wp-block-column {
+    flex: 0 0 calc(100% - (var(--spotlight-peek) + var(--spotlight-gap))) !important;
+    max-width: none !important;
+    width: calc(100% - (var(--spotlight-peek) + var(--spotlight-gap))) !important;
+  }
+
+  /* remove extra end spacer so last item has no right peek */
+  .c-spotlights .wp-block-columns::after { content: none; flex: 0 0 0; }
+
+  /* Remove grow/shrink behavior on mobile; all panels equal width */
+  .c-spotlights .wp-block-column.is-active,
+  .c-spotlights .wp-block-column:not(.is-active) {
+    flex: 0 0 calc(100% - var(--spotlight-peek));
+  }
+
+  /* Disable hover effects on mobile */
+  .c-spotlights .wp-block-column:hover { filter: none; opacity: 1; }
+
+  /* Hide native scrollbar for cleaner look */
+  .c-spotlights .wp-block-columns::-webkit-scrollbar { display: none; }
+}
+
+/* Tablet+Mobile: ensure images fill the panel neatly */
+@media (width <= 1024px) {
+  .c-spotlights .wp-block-cover__image-background,
+  .c-spotlights .wp-block-cover img,
+  .c-spotlights .wp-post-image {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+  }
+
+  .c-spotlights .wp-block-cover {
+    background-position: center;
+    background-size: cover;
+    height: 100%;
+
+    /* Neutralize Cover defaults and inline min-heights that create over-tall panels */
+    min-height: 0 !important;
+  }
+
+  .c-spotlights .wp-block-cover__inner-container {
+    height: 100%;
+    min-height: 0 !important;
+  }
+}
+
+

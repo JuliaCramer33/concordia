@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="none">
+  <!-- White overlay with transparent inverted-arch notch at the bottom -->
+  <!-- Use evenodd fill so the inner arch path becomes a transparent hole -->
+  <path fill="#ffffff" fill-rule="evenodd" d="
+    M0,0 H1200 V400 H0 Z
+    M0,300
+      C250,380 450,420 600,420
+      C750,420 950,380 1200,300
+      V400 H0 Z
+  "/>
+</svg>
+
+

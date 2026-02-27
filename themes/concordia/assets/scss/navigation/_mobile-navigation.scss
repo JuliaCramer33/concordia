@@ -1,0 +1,279 @@
+/* mobile nav specificity + sticky header (moved from _navigation.scss) */
+.mobile-nav {
+  /* Mobile mega trigger (hamburger -> X) */
+  .mobile-mega-trigger {
+    align-items: center;
+    appearance: none;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    color: var(--wp--preset--color--primary, #004c23);
+    cursor: pointer;
+    display: inline-flex;
+    height: 48px;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    width: 48px;
+  }
+
+  .mobile-mega-trigger:focus-visible {
+    border-radius: 8px;
+    box-shadow: 0 0 0 2px rgba(0, 76, 35, .35);
+    outline: none;
+  }
+
+  .mobile-mega-trigger__bars {
+    background: currentColor;
+    border-radius: 1px;
+    height: 2px;
+    position: relative;
+    transition: background .2s ease, opacity .2s ease;
+    width: 26px;
+  }
+
+  .mobile-mega-trigger__bars::before,
+  .mobile-mega-trigger__bars::after {
+    background: currentColor;
+    border-radius: 1px;
+    content: '';
+    height: 2px;
+    left: 0;
+    position: absolute;
+    transition: transform .2s ease, opacity .2s ease;
+    width: 26px;
+  }
+
+  .mobile-mega-trigger__bars::before {
+    transform: translateY(-7px);
+  }
+
+  .mobile-mega-trigger__bars::after {
+    transform: translateY(7px);
+  }
+
+  /* Active state => turn into X */
+  .mobile-mega-trigger.is-active .mobile-mega-trigger__bars {
+    background: transparent;
+  }
+
+  .mobile-mega-trigger.is-active .mobile-mega-trigger__bars::before {
+    transform: translateY(0) rotate(45deg);
+  }
+
+  .mobile-mega-trigger.is-active .mobile-mega-trigger__bars::after {
+    transform: translateY(0) rotate(-45deg);
+  }
+}
+
+/* Mobile navigation deltas vs desktop mega panels */
+.mega-mobile {
+  .mega-panel {
+    left: auto !important;
+    max-width: 100%;
+
+    // Position over the page and size to the visible viewport under the header
+    position: fixed;
+    right: 0 !important;
+
+    // Lock width so expanding submenus don't change panel width on tablet
+    width: clamp(320px, 40vw, 420px);
+    z-index: 999;
+
+    // On mobile, mega panel should span the full height minus header/admin bars and full width
+    // Tablet keeps a narrower sheet (clamp width)
+    @media (width < 768px) {
+      max-width: none !important;
+      width: 100% !important;
+
+      /* top/height already set above using --mobile-header-total */
+    }
+
+    .mega-panel__inner {
+      box-sizing: border-box;
+      justify-content: space-between;
+      max-height: calc(100dvh - var(--mobile-header-total, var(--admin-bar-offset, 0px)));
+      min-height: calc(100dvh - var(--mobile-header-total, var(--admin-bar-offset, 0px)));
+      -webkit-overflow-scrolling: touch;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      width: 100%;
+
+      .wp-block-search,
+      .wp-block-buttons,
+      .wp-block-navigation,
+      .wp-block-group {
+        width: 100% !important;
+      }
+
+      // Search Block
+      .wp-block-search {
+        .wp-block-search__inside-wrapper {
+          width: 100% !important;
+        }
+
+        input[type="search"] {
+          border: 1px solid var(--wp--preset--color--primary, #004c23);
+          border-radius: 16px 0 0 16px;
+          padding: var(--wp--preset--spacing--10, .25rem);
+        }
+
+        input:focus,
+        input:focus-visible {
+          border-color: var(--wp--preset--color--secondary, #b58500) !important;
+          outline: none;
+        }
+
+        button[type="submit"] {
+          background: var(--wp--preset--color--primary, #004c23) !important;
+          border-radius: 0 16px 16px 0 !important;
+          border-width: 1px;
+          color: #fff !important;
+          margin-left: 0;
+          padding: 0 var(--wp--preset--spacing--20, .5rem);
+
+          // Sweep (focus/hover) state: white background, green (primary) text
+          &:hover,
+          &:focus,
+          &:focus-visible {
+            background: #fff !important;
+            color: var(--wp--preset--color--primary, #0a65cc) !important;
+          }
+        }
+      }
+
+      // Prevent long labels from expanding the panel (merged into link block below)
+
+      /* Stack nav items vertically and let submenus take up flow space */
+      // Correct nesting: all rules must be children of `.mega-panel__inner`
+      // Use only `.mobile-nav` for mobile context, as this is the canonical container
+    
+      .wp-block-navigation__container {
+        align-items: stretch;
+        gap: .7em;
+      }
+
+      .wp-block-navigation-item {
+        flex-wrap: wrap; // keep label + arrow on first row; allow submenu to wrap below
+        margin: var(--wp--preset--spacing--10, .25rem);
+        padding-bottom: var(--wp--preset--spacing--20, .5rem);
+      }
+
+      .wp-block-navigation-item > a,
+      .wp-block-navigation-item__content {
+        display: block;
+        line-height: 1.2;
+        overflow-wrap: break-word;
+        padding-bottom: 0 !important;
+        padding-top: 0 !important;
+        width: 100%;
+        word-break: normal;
+      }
+
+      // Top-level divider
+      .wp-block-navigation__container > .wp-block-navigation-item {
+        border-bottom: 1px solid rgba(0, 0, 0, .15);
+      }
+
+      // Submenu container: all overrides for non-overlay submenus
+      .wp-block-navigation__submenu-container {
+        background: transparent;
+        border: 0;
+        bottom: auto;
+        box-shadow: none;
+        flex-basis: 100%;
+        left: auto;
+        margin: 0;
+        min-width: 0;
+        opacity: 1;
+        order: 2;
+        padding-left: 1rem;
+        position: static;
+        transform: none;
+        visibility: visible;
+        width: 100%;
+        z-index: auto;
+
+        // Hide with [hidden]
+        &[hidden] {
+          display: none !important;
+        }
+
+        // Submenu row padding
+        .wp-block-navigation-item {
+          margin: 0;
+          margin-top: var(--wp--preset--spacing--20, .5rem);
+          padding-bottom: 0;
+          padding-top: 0;
+        }
+      }
+
+      // End Search Block
+
+      /* Top-level parent items (have children) */
+      .wp-block-navigation__container > .wp-block-navigation-item.has-child > a,
+      .wp-block-navigation__container > .wp-block-navigation-item.has-child > .wp-block-navigation-item__content {
+        font-weight: 600;
+
+        /* no left padding on the link itself; apply it to the toggle button for better hover shape */
+        padding-left: 0;
+        text-decoration: none;
+        text-decoration-color: transparent;
+
+        &:focus-visible {
+          background-color: rgba(0, 76, 35, .10);
+          border-radius: 6px;
+          box-shadow: 0 0 0 2px rgba(0, 76, 35, .20);
+          color: var(--wp--preset--color--primary);
+          outline: none;
+          text-decoration: none;
+        }
+      }
+
+      .wp-block-navigation__container > .wp-block-navigation-item:not(.has-child) > a,
+      .wp-block-navigation__container > .wp-block-navigation-item:not(.has-child) > .wp-block-navigation-item__content {
+        font-weight: 600;
+        padding-left: 0;
+        text-decoration: none;
+        text-decoration-color: transparent;
+
+        &:focus-visible {
+          background-color: rgba(0, 76, 35, .10);
+          border-radius: 6px;
+          box-shadow: 0 0 0 2px rgba(0, 76, 35, .20);
+          color: var(--wp--preset--color--primary);
+          outline: none;
+          text-decoration: none;
+        }
+      }
+
+      /* Any children (submenu links or custom content) */
+      .wp-block-navigation__submenu-container .wp-block-navigation-item > a,
+      .wp-block-navigation__submenu-container .wp-block-navigation-item__content {
+        font-size: 0.95em;
+        font-weight: 400;
+        padding-left: var(--wp--preset--spacing--10, .25rem);
+        text-decoration: none;
+        text-decoration-color: transparent;
+
+        &:focus-visible {
+          background-color: rgba(0, 76, 35, .06);
+          border-radius: 4px;
+          color: var(--wp--preset--color--primary);
+          outline: none;
+          text-decoration: none;
+        }
+      }
+
+      // Accessible softer focus styles for nav links and nav-custom-content
+      .wp-block-navigation-item > a:focus-visible,
+      .wp-block-navigation-item__content:focus-visible {
+        background-color: rgba(0, 76, 35, .06);
+        border-radius: 6px;
+        box-shadow: 0 0 0 2px rgba(0, 76, 35, .35);
+        outline: none !important;
+      }
+    }
+  }
+}

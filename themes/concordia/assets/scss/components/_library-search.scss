@@ -1,0 +1,211 @@
+.ebsco-search-box {
+  width: 100%;
+}
+
+.ebsco-search-box * {
+  transition: all 0.3s ease-in-out 0ms;
+}
+
+.ebsco-search-box__search:has(:focus-within) {
+  border-color: #004C23;
+  box-shadow: 0 0 0 1px #004C23, 0 0 0 4px #FDB724;
+}
+
+.ebsco-search-box__search:has(:focus-within).novelist {
+  border-color: #004C23;
+  box-shadow: 0 0 0 1px #004C23, 0 0 0 4px #FDB724;
+}
+
+.ebsco-search-box__search {
+  border: 4px solid #FDB724;
+  border-radius: 4px;
+  color: #3d3f42;
+  cursor: pointer;
+  display: flex;
+}
+
+.ebsco-search-box__search__input {
+  border: none;
+  border-radius: 4px;
+  color: #3d3f42;
+  flex-grow: 1;
+  font-size: 1rem;
+  outline: none;
+  padding-block: 0.75rem;
+  padding-inline-start: 1rem;
+}
+
+.ebsco-search-box__search__button {
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  color: #004C23;
+  cursor: pointer;
+  display: flex;
+  flex: 0;
+  outline: none;
+  padding-inline: 1rem;
+}
+
+.ebsco-search-box__search__button>svg {
+  fill: #004C23;
+  height: 2rem;
+  max-inline-size: none;
+  width: 2rem;
+}
+
+.ebsco-search-box__extras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.ebsco-search-box__extras__advanced {
+  display: flex;
+  flex-grow: 1;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.ebsco-search-box__extras__advanced a {
+  border: 1px solid;
+  border-color: transparent;
+  border-radius: 4px;
+  color: #004C23;
+  cursor: pointer;
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  padding-block: 0.2rem;
+  padding-inline: 0.75rem;
+  text-decoration: none;
+}
+
+.ebsco-search-box__extras__advanced a:hover,
+.ebsco-search-box__extras__limiter:hover>label {
+  background-color: #f5f5f5;
+  border-color: #8d9095;
+  color: #3d3f42;
+}
+
+.ebsco-search-box__extras__limiter>label {
+  border: 1px solid;
+  border-color: #8d9095;
+  border-radius: 4px;
+  color: #55585d;
+  cursor: pointer;
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 800;
+  padding-block: 0.5rem;
+  padding-inline: 0.75rem;
+}
+
+.ebsco-search-box__extras__limiter>input {
+  display: none;
+}
+
+.ebsco-search-box__extras__limiter>input:checked+label {
+  background-color: #e9effa;
+  border-color: #3e75cf;
+  color: #2d62b7;
+}
+
+.ebsco-search-box__extras__limiter.novelist>input:checked+label {
+  background-color: #e6e0f0;
+  border-color: #004C23;
+  color: #634790;
+}
+
+.ebsco-search-box__extras__limiter:hover>input:checked+label {
+  background-color: #d8e3f5;
+  color: #1d3f75;
+}
+
+.ebsco-search-box__extras__limiter.novelist:hover>input:checked+label {
+  background-color: #cdc0e0;
+  border-color: #473367;
+  color: #473367;
+}
+
+.ebsco-search-box__logo {
+  display: block;
+  padding: 1rem;
+}
+
+.ebsco-search-box__logo__image {
+  display: block;
+  height: 100px;
+  width: 100%;
+}
+
+.ebsco-search-box__header {
+  color: #004C23;
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-block-end: 0.67rem;
+  padding-bottom: 12px;
+  padding-top: 8px;
+}
+
+.ebsco-search-box__radio {
+  border: none;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.ebsco-search-box__radio>label {
+  position: relative;
+}
+
+.ebsco-search-box__radio>label>[type="radio"] {
+  display: contents;
+  height: 0;
+  opacity: 0;
+  width: 0;
+}
+
+.ebsco-search-box__radio>label>[type="radio"]+span {
+  border: 4px solid #8d9095;
+  border-radius: 4px;
+  color: #55585d;
+  cursor: pointer;
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding-block: 0.5rem;
+  padding-inline: 0.75rem;
+}
+
+.ebsco-search-box__radio>label>[type="radio"]+span:hover {
+  background-color: #f5f5f5;
+  color: #3d3f42;
+}
+
+.ebsco-search-box__radio>label>[type="radio"]:checked+span {
+  background-color: #e9effa;
+  border: 1px solid #3e75cf;
+  color: #2d62b7;
+}
+
+.ebsco-search-box__radio>label>[type="radio"]:checked+span:hover {
+  background-color: #d8e3f5;
+  border-color: #8d9095;
+  color: #1d3f75;
+}
+
+.ebsco-search-box__radio>label>[type="radio"]:focus+span {
+  border-color: #3e75cf;
+  box-shadow: 0 0 0 1px #3e75cf, 0 0 0 4px #d8e3f5;
+}
+
+.ebsco-search-box__search>select {
+  border: none;
+  border-inline-end: 1px solid #8d9095;
+  border-radius: 4px;
+  font-size: 1rem;
+}

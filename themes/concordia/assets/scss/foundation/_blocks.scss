@@ -1,0 +1,31 @@
+/* Gentle enhancements to core blocks using spacing/type tokens. */
+@use 'tokens' as *;
+
+/* Paragraphs already inherit base; ensure rhythm in flow containers */
+.wp-block-paragraph {
+  margin-block: 0;
+}
+
+/* Navigation */
+.wp-block-navigation__container {
+  gap: var(--wp--preset--spacing--20, .5rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Quote / Pullquote / Separator */
+.wp-block-quote { 
+  margin-block: var(--wp--preset--spacing--40, 1rem);
+  padding-inline: var(--wp--preset--spacing--30, .75rem);  
+}
+
+.wp-block-pullquote {
+  margin-block: var(--wp--preset--spacing--50, 1.5rem);
+}
+
+.wp-block-separator {
+  margin-block: var(--wp--preset--spacing--40, 1rem);
+}
+
+

@@ -1,0 +1,14 @@
+node_modules/
+.DS_Store
+.env
+npm-debug.log*
+.vscode/
+.idea/
+coverage/
+/.cache/
+
+# OS files
+Thumbs.db
+
+# Ignore built plugin assets (webpack output)
+assets/

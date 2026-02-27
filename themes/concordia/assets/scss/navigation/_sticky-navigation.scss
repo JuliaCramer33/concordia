@@ -1,0 +1,295 @@
+.site-header {
+  z-index: 1000;
+ 
+  .wp-block-navigation-item,
+  .wp-block-list {
+    list-style: none;
+    padding-inline-start: 0 !important;
+  }
+
+  .mega-main {
+    flex-grow: 1 !important;
+  }
+
+  &__container {
+    /* Base fixed positioning (shared between states) */
+    left: 50%;
+    padding-inline: 0;
+    position: fixed;
+
+    /* admin bar height if present */
+    top: var(--admin-bar-offset, 0) !important;
+    transform: translate(-50%, 0);
+    transition: transform .25s ease, box-shadow .2s ease, border-radius .2s ease, width .25s ease;
+    width: 100%;
+    z-index: 1000;
+
+    &:has(.is-menu-open) {
+      max-width: none !important;
+      transform: translate(-50%, 0) !important;
+      width: 100% !important;
+    }
+
+    /* Floating state (offset down, rounded, elevated) */
+    &:not(.is-stuck) {
+      border-radius: 1rem;
+      box-shadow: var(--wp--preset--shadow--header-depth);
+      transform: translate(-50%, var(--header-offset, 40px));
+      width: min(100%, calc(100vw - 80px));
+
+      /* Cap header only on ultra-wide screens */
+      @media (width >=2400px) {
+        max-width: calc(var(--max-canvas) - 80px);
+      }
+    }
+
+    &.is-stuck {
+      border-radius: 0;
+      box-shadow: var(--wp--preset--shadow--header-depth);
+
+      /* same left/top/width as base; only transform Y animates to 0 */
+      transform: translate(-50%, 0);
+      width: 100%;
+    }
+
+    /* Hide-on-down (scroll intent) */
+    &.is-stuck.is-hidden {
+      transform: translate(-50%, -100%);
+    }
+
+    /* If header is stuck, panel should also be edge-to-edge with no rounded corners at top */
+    &.is-stuck .mega-panel {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+
+    /* Connect header and mega when open (floating state) */
+    &:not(.is-stuck):has(.mega-panel[aria-hidden="false"]),
+    &:not(.is-stuck):has(.mega-panel:not([hidden])) {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &:not(.is-stuck) .mega-panel[aria-hidden="false"],
+    &:not(.is-stuck) .mega-panel:not([hidden]) {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+
+    @media (width >=2400px) {
+      max-width: var(--max-canvas);
+    }
+  }
+
+  .mega-panels {
+    margin: auto;
+    position: relative; // contains absolutely-positioned panels
+    width: 100%;
+
+    .mega-panel {
+      background: var(--wp--preset--color--base, #fff);
+      box-shadow: 0 20px 24px -4px rgba(0, 0, 0, .08);
+      left: 0;
+      position: absolute;
+      right: 0;
+
+      /* match header container width */
+      top: 100%;
+      z-index: 50;
+
+      &[hidden] {
+        display: none;
+      }
+
+      /* While a panel is closed by a11y state, be fully inert to clicks */
+      &[aria-hidden="true"] {
+        pointer-events: none !important;
+      }
+      
+
+      .mega-side {
+        margin-left: auto;
+
+        @media (width >= 1400px) {
+          border-top-right-radius: 1rem !important;
+        }
+
+        &__list {
+          gap: .25rem;
+          list-style: none;
+
+          & a {
+            text-decoration: none;
+
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+
+      .mega-items {
+        &__item {
+          font-size: 0;
+          position: relative;
+          transition: opacity .15s ease;
+
+          &:focus-visible,
+          &:hover {
+            border-color: var(--wp--preset--color--gold-500) !important;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .06);
+            color: var(--wp--preset--color--primary);
+
+            p,
+            a {
+              color: var(--wp--preset--color--primary) !important;
+            } 
+          }
+
+          a {
+            height: 100%;
+            position: absolute;
+            width: 100%;
+          }
+
+          &-content {
+            pointer-events: none;
+          }
+      }
+      }
+    }
+  }
+
+}
+
+/* Desktop navigation: remove default underlines and add sweep underline on hover/focus */
+@media (width >= 1024px) {
+  .site-header {    
+    .wp-block-navigation {
+      .wp-block-navigation-item {
+        a {
+          /* Ensure color present so ::before has effect */
+          color: inherit;
+          outline: none !important;
+          padding-bottom: .25rem;
+          position: relative;
+          text-decoration: none;
+          
+          &::before {
+            background: currentColor;
+            bottom: 0;
+            content: '';
+            height: 2px;
+            left: 0;
+            opacity: 0.9;
+            pointer-events: none;
+            position: absolute;
+            right: 0;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .22s cubic-bezier(.4,0,.2,1);
+            width: 100%;
+            z-index: 0;
+          }
+
+          &:hover::before,
+          &:focus-visible::before {
+            transform: scaleX(1);
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Offsets */
+:root {
+  --admin-bar-offset: 0;
+  --header-offset: 40px;
+
+  /* requested gap from top */
+}
+
+body.admin-bar {
+  --admin-bar-offset: 32px;
+
+  /* When admin bar exists, floating adds header offset via transform only */
+  & .site-header__container:not(.is-stuck) {
+    transform: translate(-50%, calc(var(--header-offset, 40px)));
+  }
+}
+
+@media (width >= 1024px) {
+  .wp-block-navigation-item.has-mega {
+    > a {
+      padding-right: 1rem; /* space for chevron */
+      position: relative;
+    }
+    
+    > a::after {
+      /* Use external SVG via mask and force primary green color */
+      background-color: var(--wp--preset--color--primary, #004c23);
+      content: '';
+      display: block;
+      height: .75em;
+      mask: url("../../assets/icons/arrow-right.svg") no-repeat center / 1em 1em;
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      transition: transform .2s ease;
+      width: .75em;
+    }
+
+    /* When mega is open, point up */
+    > a[aria-expanded="true"]::after {
+      transform: translateY(-50%) rotate(-90deg);
+    }
+  }
+}
+
+/* Trigger state hint */
+.wp-block-navigation-item.has-mega > a[aria-expanded="true"] {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Motion (respects reduced motion) */
+@media (prefers-reduced-motion: no-preference) {
+  .mega-panel {
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity .15s ease, transform .15s ease;
+  }
+
+  .mega-panel[aria-hidden="false"] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header__container {
+    transition: none;
+  }
+}
+
+/* Mobile nav layout (tablet-down): full-bleed and pinned to top */
+@media (width < 768px) {
+  /* Ensure header container isn’t offset on mobile */
+  .site-header__container {
+    transform: translate(-50%, 0) !important;
+    width: 100% !important;
+
+  }
+
+  /* Lock scrolling of the document when mobile panel is open */
+  html.has-mobile-mega-open,
+  body.has-mobile-mega-open {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+}
+  
+

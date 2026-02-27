@@ -1,0 +1,232 @@
+/* Forms: inputs/selects/textarea/buttons using tokens only. */
+@use 'tokens' as *;
+
+/* Base fields */
+input,
+select,
+textarea {
+  background: $paper;
+  border: 1px solid var(--wp--preset--color--neutral-300, rgba(0,0,0,.2));
+  border-radius: var(--wp--preset--spacing--20, .25rem);
+  color: $ink;
+  font: inherit;
+  padding-block: var(--wp--preset--spacing--20, .5rem);
+  padding-inline: var(--wp--preset--spacing--30, .75rem);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+input[disabled],
+select[disabled],
+textarea[disabled] {
+  opacity: .6;
+}
+
+/* Buttons (non-GF) - baseline; GF gets its own sweep below for inputs */
+button,
+.wp-element-button,
+.wp-block-button__link {
+  background: $primary;
+  border: 1px solid currentColor;
+  border-radius: var(--wp--preset--spacing--20, .25rem);
+  color: var(--wp--preset--color--contrast, $ink);
+  cursor: pointer;
+  font: inherit;
+  padding-block: var(--wp--preset--spacing--20, .5rem);
+  padding-inline: var(--wp--preset--spacing--30, .75rem);
+  text-decoration: none;
+}
+
+button:focus,
+.wp-element-button:focus,
+.wp-block-button__link:focus {
+  border-radius: 0;
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+button[disabled] {
+  cursor: not-allowed;
+  opacity: .6;
+}
+
+/* Gravity Forms – fields */
+.gform_wrapper {
+  /* Inputs, selects, textarea (exclude submit/button inputs) */
+  input:not([type="submit"], [type="button"], [type="reset"], [type="checkbox"], [type="radio"]),
+  select,
+  textarea {
+    /* Inherit base field styles; only enforce full width in GF layouts */
+    inline-size: 100%;
+  }
+
+  .gfield_error input:not([type="submit"], [type="button"], [type="reset"]),
+  .gfield_error select,
+  .gfield_error textarea {
+    border-color: var(--wp--preset--color--gold-500, #b58500);
+  }
+}
+
+/* Removed legacy GF layered sweep; GF handled below */
+
+.gfield_required {
+  font-size: 20px !important;
+}
+
+.gform_required_legend {
+  font-size: 14px !important;
+  margin-bottom: 10px !important;
+}
+
+.gform-consent-label {
+  margin-bottom: 15px;
+}
+
+/* GF buttons are normalized below with the shared sweep rules */
+
+.zip-code .ginput_address_zip {
+  inline-size: 100% !important;
+}
+
+// search and filter
+.search-filter-field--control-type-submit button {
+  border-radius: 8px !important;
+  border-width: 1px !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  padding: 10px 20px !important;
+}
+
+/* Search & Filter – harmonize submit button with theme sweep and plugin tokens */
+.search-filter-field--control-type-submit {
+  .search-filter-input-button {
+    /* Sweep color should match the current text color (S&F token), not the background */
+    --btn-sweep: var(--search-filter-input-color, currentColor);
+    --btn-bg: var(--search-filter-input-background-color, var(--wp--preset--color--primary));
+
+    background-clip: padding-box;
+    background-image: linear-gradient( 90deg, var(--btn-sweep, currentColor) 0%, var(--btn-sweep, currentColor) 50%, transparent 50% );
+    background-position: 100% 0 !important; /* ensure full sweep start; some plugin rules set 50% */
+    background-repeat: no-repeat;
+    background-size: 200% 100%;
+    border: 1px solid var(--btn-bg); /* border matches base background */
+    color: var(--search-filter-input-color, currentColor);
+    transition: color .2s ease, background-position .25s ease;
+  }
+
+  /* Ensure inner spans/icons inherit and animate text color */
+  .search-filter-input-button,
+  .search-filter-input-button * {
+    color: inherit !important;
+  }
+
+  .search-filter-input-button:hover,
+  .search-filter-input-button:focus-visible,
+  .search-filter-input-button:hover *,
+  .search-filter-input-button:focus-visible * {
+    color: var(--search-filter-input-color-hover, var(--btn-bg)) !important;
+  }
+
+  .search-filter-input-button:hover,
+  .search-filter-input-button:focus-visible {
+    background-position: 0 0 !important;
+  }
+}
+
+/* Gravity Forms – sweep overlay for buttons and inputs */
+:is(
+  .gform_wrapper .gform_button,
+  .gform_wrapper .gform_next_button,
+  .gform_wrapper .gform_previous_button,
+  .gform_wrapper input[type="submit"],
+  .gform_wrapper input[type="button"]
+) {
+  appearance: none;
+
+  /* Sweep overlay using gradient */
+
+  /* property order: clip → position → repeat → size */
+  background-clip: padding-box;
+  background-image: linear-gradient( 90deg, var(--btn-sweep, currentColor) 0%, var(--btn-sweep, currentColor) 50%, transparent 50% );
+  background-position: 100% 0 !important;
+  background-repeat: no-repeat;
+  background-size: 200% 100% !important;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 10px 20px !important;
+  position: relative;
+  transition: background-position .25s ease, color .2s ease;
+
+  /* Map to GF theme tokens so our sweep follows GF hover variables */
+  --btn-sweep: var(--gf-local-color, currentColor);
+  --btn-bg: var(--gf-local-bg-color, var(--wp--preset--color--primary));
+}
+
+/* Enforce visible 1px border on GF buttons (framework can unset it) */
+:is(
+  .gform_wrapper .gform_button,
+  .gform_wrapper .gform_next_button,
+  .gform_wrapper .gform_previous_button,
+  .gform_wrapper input[type="submit"].gform_button,
+  .gform-theme.gform-theme--framework.gform_wrapper input[type="submit"].button.gform_button
+) {
+  border-color: var(--gf-local-border-color, var(--btn-bg)) !important;
+  border-radius: 8px !important;
+  border-style: solid !important;
+  border-width: 1px !important;
+}
+
+:is(
+  .gform_wrapper .gform_button,
+  .gform_wrapper .gform_next_button,
+  .gform_wrapper .gform_previous_button,
+  .gform_wrapper input[type="submit"],
+  .gform_wrapper input[type="button"]
+):hover,
+:is(
+  .gform_wrapper .gform_button,
+  .gform_wrapper .gform_next_button,
+  .gform_wrapper .gform_previous_button,
+  .gform_wrapper input[type="submit"],
+  .gform_wrapper input[type="button"]
+):focus-visible {
+  background-position: 0 0 !important;
+  
+  /* Keep border synced with GF hover token if present */
+  border-color: var(--gf-local-border-color, var(--btn-bg)) !important;
+  color: var(--btn-bg) !important;
+
+  /* Force text color to match the target sweep background */
+  --gf-local-color: var(--btn-bg) !important;
+}
+
+/* Ensure GF button descendants (spans/icons) inherit text color on hover */
+:is(
+  .gform_wrapper .gform_button,
+  .gform_wrapper .gform_next_button,
+  .gform_wrapper .gform_previous_button
+):hover *,
+:is(
+  .gform_wrapper .gform_button,
+  .gform_wrapper .gform_next_button,
+  .gform_wrapper .gform_previous_button
+):focus-visible * {
+  color: inherit !important;
+}
+
+/* Gravity Forms – global vertical gap override (reduce y-gap without editing each form) */
+
+.gform-theme--foundation {
+  --gf-form-gap-y: 20px !important;
+}
+
+.gform-theme--foundation .gform_fields {
+  /* Ensure fallback even if the variable wasn’t wired */
+  grid-row-gap: var(--gf-form-gap-y, 20px) !important;
+  row-gap: var(--gf-form-gap-y, 20px) !important;
+}

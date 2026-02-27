@@ -1,0 +1,48 @@
+/* Minimal, respectful reset. Avoids fighting WP/editor defaults. */
+
+*, 
+*::before,
+*::after {
+  box-sizing: border-box; 
+}
+
+html { 
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+img, svg, video, canvas, audio { 
+  display: block;
+  height: auto;
+  max-inline-size: 100%;
+}
+
+iframe {
+  display: block;
+}
+
+img {
+  image-rendering: auto;
+}
+
+button, 
+input, 
+select,
+textarea {
+  color: inherit;
+  font: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { 
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+

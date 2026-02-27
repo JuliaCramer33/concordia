@@ -1,0 +1,35 @@
+{
+  "name": "kanahoma-responsive-settings",
+  "version": "1.0.0",
+  "description": "Kanahoma Responsive Settings for Gutenberg",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start"
+  },
+  "author": "Daniel Post <daniel@posty.studio> (https://posty.studio/)",
+  "license": "GPL-3.0",
+  "prettier": "@wordpress/prettier-config",
+  "browserslist": [
+    "extends @wordpress/browserslist-config"
+  ],
+  "devDependencies": {
+    "@types/wordpress__components": "^23.0.1",
+    "@wordpress/eslint-plugin": "^14.8.0",
+    "@wordpress/prettier-config": "^2.19.0",
+    "@wordpress/scripts": "^26.6.0",
+    "css-loader": "^6.8.1",
+    "cssnano": "^6.0.1",
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
+    "mini-css-extract-plugin": "^2.7.6",
+    "postcss-import": "^15.1.0",
+    "postcss-loader": "^7.3.3",
+    "postcss-preset-env": "^8.5.1",
+    "prettier": "npm:wp-prettier@^2.8.5"
+  },
+  "dependencies": {
+    "@types/wordpress__blocks": "^12.5.0",
+    "@wordpress/icons": "^9.26.0",
+    "classnames": "^2.3.2"
+  }
+}

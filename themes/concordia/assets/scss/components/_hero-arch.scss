@@ -1,0 +1,150 @@
+/* Hero – Arch Mask with Parallax */
+.hero-arch { position: relative; }
+
+/* Cover variant (your current block) */
+.wp-block-cover.hero-arch {
+  /* Draw a curved shadow following the masked arch edge (outside the mask) */
+  filter: drop-shadow(0 16px 20px rgba(0, 0, 0, 0.22));
+
+  /* Apply SVG mask to the Cover container so both image and overlay are clipped */
+
+  /* Mobile-first: use mobile mask (shallower) */
+  mask: url('/wp-content/themes/concordia/assets/icons/arch-mask-mobile.svg') no-repeat 0 0 / 100% 100%;
+  min-height: var(--hero-arch-height);
+  position: relative;
+
+  /* Ensure shadow can render above following section */
+  z-index: 2;
+
+  /* Responsive height: mobile default */
+  --hero-arch-height: 50vh;
+  --hero-arch-extra: 10vh; /* extra media height beyond container */
+
+  /* Default parallax strength (can be overridden per breakpoint below) */
+  --hero-parallax-max: 36; /* px on mobile */
+
+  /* Ken Burns on scroll defaults */
+  --hero-kenburns-max-scale: 1.08; /* final scale at full progress */
+  --hero-pan-x-max: 16px; /* subtle horizontal pan */
+  --hero-pan-y-max: var(--hero-parallax-max); /* reuse vertical shift */
+}
+
+/* Tablet and up: medium arch */
+@media (width >= 768px) {
+  .wp-block-cover.hero-arch {
+    mask: url('/wp-content/themes/concordia/assets/icons/arch-mask-tablet.svg') no-repeat 0 0 / 100% 100%;
+    min-height: var(--hero-arch-height);
+
+    --hero-arch-height: 60vh;
+  }
+}
+
+/* Desktop and up: full desktop arch */
+@media (width >= 1024px) {
+  .wp-block-cover.hero-arch {
+    mask: url('/wp-content/themes/concordia/assets/icons/arch-mask.svg') no-repeat 0 0 / 100% 100%;
+    min-height: var(--hero-arch-height);
+
+    --hero-arch-height: 85vh;
+  }
+}
+
+/* Ensure the image is bounded by the masked container and fills it */
+.wp-block-cover.hero-arch > .wp-block-cover__image-background {
+  display: block;
+  height: calc(var(--hero-arch-height) + var(--hero-arch-extra));
+  inset: 0;
+  object-fit: cover;
+  pointer-events: none;
+  position: absolute;
+
+  /* Translate first (X/Y), then scale (Ken Burns) */
+  transform: translate(
+      var(--hero-pan-x, 0),
+      var(--hero-pan-y, var(--hero-parallax, 0))
+    )
+    scale(var(--hero-scale, 1));
+  transform-origin: 50% 55%;
+  width: 100%;
+  will-change: transform;
+}
+
+@media (width >= 768px) {
+  .wp-block-cover.hero-arch {
+    --hero-parallax-max: 52;
+    --hero-kenburns-max-scale: 1.1;
+    --hero-pan-x-max: 22px;
+  }
+}
+
+@media (width >= 1024px) {
+  .wp-block-cover.hero-arch {
+    --hero-parallax-max: 68;
+    --hero-kenburns-max-scale: 1.12;
+    --hero-pan-x-max: 28px;
+  }
+}
+
+/* Keep overlay content above the image */
+.wp-block-cover.hero-arch > .wp-block-cover__inner-container {
+  opacity: var(--hero-text-opacity, 1);
+  position: relative;
+
+  /* Text parallax (only active when container has .is-text-parallax) */
+  transform: translateY(var(--hero-text-shift, 0));
+  will-change: transform, opacity;
+  z-index: 1;
+}
+
+/* Fallback shape if mask-image is unsupported (for quick validation) */
+@supports not (mask-image: url("")) {
+  .wp-block-cover.hero-arch {
+    clip-path: ellipse(125% 38% at 50% 100%);
+  }
+}
+
+/* Defaults for text parallax when enabled via .is-text-parallax */
+.wp-block-cover.hero-arch.is-text-parallax {
+  /* Max upward shift of text as section scrolls past (faster than image) */
+  --hero-text-shift-max: 120px; /* mobile */
+
+  /* Where to start fading text out (0..1 progress), 1 = no fade */
+  --hero-text-fade-start: 0.35;
+}
+
+@media (width >= 768px) {
+  .wp-block-cover.hero-arch.is-text-parallax {
+    --hero-text-shift-max: 160px;
+  }
+}
+
+@media (width >= 1024px) {
+  .wp-block-cover.hero-arch.is-text-parallax {
+    --hero-text-shift-max: 200px;
+  }
+}
+
+/* Respect reduced motion: neutralize all movement */
+@media (prefers-reduced-motion: reduce) {
+  .wp-block-cover.hero-arch {
+    --hero-parallax-max: 0 !important;
+    --hero-kenburns-max-scale: 1 !important;
+    --hero-pan-x-max: 0 !important;
+    --hero-pan-y-max: 0 !important;
+  }
+
+  .wp-block-cover.hero-arch.is-text-parallax {
+    --hero-text-shift-max: 0 !important;
+    --hero-text-fade-start: 1 !important; /* do not fade */
+  }
+
+  .wp-block-cover.hero-arch > .wp-block-cover__image-background {
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .wp-block-cover.hero-arch > .wp-block-cover__inner-container {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

@@ -1,0 +1,254 @@
+// GPA Calculator Styles
+// Grade reference table
+table.grades {
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  width: 100%;
+
+  @media (width >= 1024px) {
+    max-width: 800px;
+  }
+
+  th,
+  td {
+    border: 1px solid #ddd;
+    font-size: 12px;
+    padding: 4px 6px;
+    text-align: left;
+
+    @media (width >= 768px) {
+      font-size: 14px;
+      padding: 6px 8px;
+    }
+
+    @media (width >= 1024px) {
+      font-size: 18px;
+      padding: 8px 12px;
+    }
+  }
+
+  th {
+    background-color: #f5f5f5;
+    font-weight: 700;
+  }
+}
+
+// Input fields table
+table.input-fields {
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  width: 100%;
+
+  th,
+  td {
+    border: none;
+    padding: 8px 12px;
+    text-align: center;
+  }
+
+  th {
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #ddd;
+    font-weight: 700;
+  }
+
+  input {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    max-width: 200px;
+    padding: 8px 12px;
+    text-align: center;
+    width: 100%;
+
+    &:focus {
+      border-color: #fdb724;
+      box-shadow: 0 0 0 1px #fdb724;
+      outline: none;
+    }
+
+    &[readonly] {
+      background-color: #f5f5f5;
+      cursor: not-allowed;
+    }
+  }
+
+  // Responsive table: stack on mobile
+  @media (width <= 768px) {
+    thead {
+      display: none;
+    }
+
+    tbody,
+    tr,
+    td {
+      display: block;
+      width: 100%;
+    }
+
+    tr {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+    }
+
+    td {
+      padding: 8px 0;
+      padding-left: 50%;
+      position: relative;
+      text-align: left;
+
+      &::before {
+        content: attr(data-label);
+        font-weight: 700;
+        left: 0;
+        padding-right: 10px;
+        position: absolute;
+        text-align: left;
+        width: 45%;
+      }
+    }
+
+    input {
+      max-width: 100%;
+    }
+  }
+}
+
+// Table with no border for cumulative GPA section
+.table-responsive {
+  margin-bottom: 1rem;
+  -webkit-overflow-scrolling: touch;
+  overflow-x: auto;
+}
+
+// Summary section
+.summary {
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  margin: 2rem 0;
+  padding: 1.5rem;
+
+  p {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0.5rem 0;
+
+    span {
+      color: #004c23;
+      font-weight: 700;
+    }
+  }
+
+  @media (width <= 768px) {
+    padding: 1rem;
+
+    p {
+      font-size: 16px;
+    }
+  }
+}
+
+// Buttons
+.buttons {
+  margin: 1rem 0;
+  text-align: center;
+
+  @media (width <= 768px) {
+    text-align: left;
+  }
+}
+
+.button--reset {
+  background-color: #dc3232;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: block;
+  font-size: 16px;
+  height: auto;
+  line-height: 1.25;
+  margin: 0 auto;
+  max-width: 400px;
+  padding: 15px 55px;
+  transition: background-color 0.2s ease;
+
+  @media (width <= 768px) {
+    font-size: 14px;
+    max-width: 100%;
+    padding: 12px 20px;
+    width: 100%;
+  }
+}
+
+.button--remove {
+  background-color: #dc3232;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  line-height: 1.25;
+  padding: 8px 16px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #c92a2a;
+  }
+
+  @media (width <= 768px) {
+    margin-top: 8px;
+    padding: 10px 16px;
+    width: 100%;
+  }
+}
+
+.button--add,
+.button--cumulative,
+.button--remove,
+.button--reset {
+  border-radius: 8px;
+  color: #fff;
+  padding: 10px 24px;
+}
+
+.button--add:focus,
+.button--cumulative:focus,
+.button--remove:focus,
+.button--reset:focus {
+  border-radius: 8px;
+}
+
+// Primary buttons (Add Row, Calculate)
+.button-primary {
+  @media (width <= 768px) {
+    font-size: 14px;
+    padding: 10px 24px;
+    width: 100%;
+  }
+}
+
+// Form container
+#gradeCalculator { // stylelint-disable-line selector-id-pattern
+  @media (width <= 768px) {
+    margin-bottom: 2rem;
+  }
+}
+
+// Input error state
+.input-error {
+  background-color: #fff5f5;
+  border-color: #f00;
+}
+
+// Hide cumulative GPA info table on mobile
+table.gpa-cumulative-info {
+  display: none;
+
+  @media (width >= 768px) {
+    display: table;
+  }
+}

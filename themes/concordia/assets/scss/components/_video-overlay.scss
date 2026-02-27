@@ -1,0 +1,229 @@
+/* YouTube overlay player (lazy iframe) - mobile first */
+
+.c-video {
+  --video-aspect: 16 / 9; /* mobile default, can be overridden via helpers */
+  
+  border-radius: .75rem;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+/* Optional aspect helpers */
+.c-video.is-4-3 { --video-aspect: 4 / 3; }
+.c-video.is-1-1 { --video-aspect: 1 / 1; }
+.c-video.is-21-9 { --video-aspect: 21 / 9; }
+
+.alignfull .c-video,
+.alignwide .c-video,
+.wp-block-group.alignfull .c-video,
+.wp-block-group.alignwide .c-video {
+  max-width: none;
+  width: 100%;
+}
+
+.c-video__frame { 
+  margin-block-start: 0;
+  position: static;
+}
+
+/* Mobile defaults: natural document flow when not playing */
+.c-video__frame .wp-block-embed,
+.c-video__frame .wp-block-embed__wrapper { 
+  height: auto;
+  opacity: 1; 
+  transition: opacity .2s ease; 
+  width: 100%;
+}
+
+.c-video:not(.is-playing) .c-video__frame {
+  height: 0;
+  overflow: hidden;
+}
+
+.c-video:not(.is-playing) .c-video__frame .wp-block-embed,
+.c-video:not(.is-playing) .c-video__frame .wp-block-embed__wrapper {
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  width: 100%;
+}
+
+.c-video__poster {
+  height: auto;
+  opacity: 1;
+  position: relative; /* create stacking context so z-index applies predictably */
+  transition: opacity .25s ease;
+  width: 100%;
+  z-index: 1;
+}
+
+.c-video__poster img { 
+  display: block; 
+  height: auto; 
+  object-fit: cover; 
+  width: 100%;
+}
+
+.c-video .wp-block-cover {
+  aspect-ratio: var(--video-aspect);
+  height: auto;
+  max-height: inherit;
+  min-height: auto;
+  position: relative; /* ensure absolute children center relative to poster */
+  width: 100%;
+}
+
+.c-video .wp-block-cover__inner-container {
+  height: 100%;
+  min-height: 0 !important;
+}
+
+/* Ensure poster has a tangible height on mobile even when background image is used */
+.c-video .wp-block-cover.c-video__poster {
+  /* Force aspect to avoid inline aspect-ratio:auto collapsing height */
+  aspect-ratio: var(--video-aspect) !important;
+  max-height: 80vh !important;
+  min-height: clamp(200px, 56vw, 420px) !important;
+}
+
+/* Keep the dim/background behind controls and clickable overlay */
+.c-video .wp-block-cover__background { 
+  pointer-events: none; 
+  z-index: 0; 
+}
+
+.c-video.is-playing .c-video__frame {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  z-index: 2;
+}
+
+.c-video__frame,
+.c-video__frame .wp-block-embed,
+.c-video__frame .wp-block-embed__wrapper,
+.c-video__iframe {
+  max-height: inherit;
+}
+
+.c-video__btn,
+.c-video .wp-block-buttons.c-video__btn {
+  align-items: center;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  margin: 0;
+  opacity: 1 !important; 
+  padding: 0;
+  pointer-events: auto;
+  position: absolute;
+  transform: none;
+  z-index: 5;
+}
+
+/* Button and icon (mobile size) */
+.c-video .c-video__btn .wp-block-button__link,
+.c-video .c-video__btn .c-video__play {
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  display: inline-flex;
+  font-size: 0;
+  height: 64px; /* give headroom so hover scale doesn't clip */
+  justify-content: center;
+  overflow: visible; /* ensure pseudo-element can render fully */
+  padding: 0;
+  width: 64px;  /* give headroom so hover scale doesn't clip */
+}
+
+.c-video .c-video__btn .wp-block-button__link:focus-visible,
+.c-video .c-video__btn .c-video__play:focus-visible {
+  height: 64px;
+  outline: 2px solid #fff; 
+  outline-offset: 3px; 
+  width: 64px;  
+}
+
+.c-video .c-video__btn .wp-block-button__link::before,
+.c-video .c-video__btn .c-video__play::before { display: none; }
+
+.c-video .c-video__btn .wp-block-button__link::after,
+.c-video .c-video__btn .c-video__play::after {
+  /* Inline SVG to avoid path issues on live; circle + play glyph */
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 56' fill='none'%3E%3Ccircle cx='28' cy='28' r='28' fill='white' fill-opacity='.9'/%3E%3Cpath d='M23 19l14 9-14 9V19z' fill='%23004c23'/%3E%3C/svg%3E") no-repeat center / 100% 100%;
+  content: '';
+  display: block;
+  height: 56px;
+  transform-origin: center;
+  transition: transform .2s ease;
+  width: 56px;
+}
+
+.c-video .c-video__btn .wp-block-button__link:hover::after,
+.c-video .c-video__btn .c-video__play:hover::after,
+.c-video .c-video__btn .wp-block-button__link:focus-visible::after,
+.c-video .c-video__btn .c-video__play:focus-visible::after {
+  transform: scale(1.08);
+}
+
+.screen-reader-text {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden; 
+  padding: 0;
+  position: absolute !important;
+  white-space: nowrap; 
+  width: 1px; 
+}
+
+.c-video__iframe {
+  border: 0;
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+
+/* When playing, allow the embed to fill the container */
+.c-video.is-playing .c-video__frame .wp-block-embed,
+.c-video.is-playing .c-video__frame .wp-block-embed__wrapper { height: 100%; }
+.c-video.is-playing .c-video__poster { opacity: 0; pointer-events: none; }
+
+/* Desktop-up: use overlay positioning and larger control */
+@media (width >= 1024px) {
+  /* Respect WP Cover settings on desktop (height/min-height/aspect from editor) */
+  .c-video .wp-block-cover {
+    aspect-ratio: auto;
+    height: auto;
+    inset: auto;
+    min-height: auto;
+    position: static;
+    width: 100%;
+  }
+
+  .c-video .wp-block-cover__inner-container { height: auto; }
+
+  .c-video__poster {
+    height: auto;
+    inset: auto;
+    position: static;
+    width: 100%;
+  }
+
+  .c-video .c-video__btn .wp-block-button__link,
+  .c-video .c-video__btn .c-video__play,
+  .c-video .c-video__btn .wp-block-button__link:focus-visible,
+  .c-video .c-video__btn .c-video__play:focus-visible {
+    height: 96px; /* larger container to avoid hover clip */
+    width: 96px;
+  }
+
+  .c-video .c-video__btn .wp-block-button__link::after,
+  .c-video .c-video__btn .c-video__play::after { height: 84px; width: 84px; }
+}

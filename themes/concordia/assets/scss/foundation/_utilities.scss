@@ -1,0 +1,119 @@
+/* Utilities: containers, flow spacing, visually hidden, focus ring */
+@use 'tokens' as *;
+
+:root { 
+  --cui-focus: 2px solid currentColor; 
+}
+
+.container {
+  margin-inline: auto; 
+  max-inline-size: $container;
+  padding-inline: var(--wp--preset--spacing--30, .75rem);
+}
+
+.container--wide {
+  margin-inline: auto;
+  max-inline-size: $container-wide;
+  padding-inline: var(--wp--preset--spacing--30, .75rem);
+}
+
+.flow > * + * {
+  margin-block-start: var(--wp--preset--spacing--40, 1rem);
+}
+
+.visually-hidden {
+  block-size: 1px;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  margin: -1px; 
+  overflow: hidden;
+  padding: 0;
+  position: absolute !important; 
+  white-space: nowrap; 
+}
+
+.focus-ring:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Global smooth scrolling with accessible override and top offset */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--cui-scroll-offset, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Skip link helper */
+.skip-link {
+  block-size: 1px;
+  inline-size: 1px;
+  inset-inline-start: -9999px;
+  overflow: hidden;
+  position: absolute;
+}
+
+.skip-link:focus {
+  background: $paper;
+  block-size: auto;
+  color: $ink;
+  inline-size: auto;
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  padding: var(--wp--preset--spacing--20, .5rem) var(--wp--preset--spacing--30, .75rem);
+  position: static;
+}
+
+/* Global accessible focus for interactive controls */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible { 
+  outline: 2px solid currentColor;
+}
+
+/* Z-index utilities (responsive) */
+$z-scale: 0, 1, 5, 10, 20, 30, 40, 50, 100;
+
+@mixin z-utils($suffix: '') {
+  @each $z in $z-scale {
+    .z#{$suffix}-#{$z} { z-index: $z; }
+  }
+  .z#{$suffix}-auto { z-index: auto; }
+}
+
+/* Base */
+@include z-utils;
+
+/* Tablet and up (match plugin: 768px) */
+@media (width >= 768px) {
+  @include z-utils('-tablet');
+}
+
+/* Desktop and up */
+@media (width >= 1024px) {
+  @include z-utils('-desktop');
+}
+
+/* Height utilities (responsive) */
+@mixin h-utils($suffix: '') {
+  .h#{$suffix}-0 { height: 0 !important; }
+  .h#{$suffix}-auto { height: auto !important; }
+}
+
+/* Base */
+@include h-utils;
+
+/* Tablet and up (match plugin: 768px) */
+@media (width >= 768px) {
+  @include h-utils('-tablet');
+}
+
+/* Desktop and up */
+@media (width >= 1024px) {
+  @include h-utils('-desktop');
+}

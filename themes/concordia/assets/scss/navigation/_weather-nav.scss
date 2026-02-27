@@ -1,0 +1,24 @@
+.site-header {
+  .weather-atlas-wrapper {
+    background-color: transparent !important;
+    border: none !important;
+    margin-top: 0;
+    position: relative;
+
+    .weather-atlas-body { 
+      .current_temp {
+        .wi {
+          font-size: 2em;
+        }
+        
+        .temp {
+          font-size: 2em;
+        }
+      }
+
+      .current_text {
+        font-size: 1em;
+      }
+    }
+  }  
+}

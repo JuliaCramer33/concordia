@@ -1,0 +1,111 @@
+@use 'tokens' as *;
+
+/* Buttons */
+
+/* Hover handled by sweep + color swap; avoid brightness filter */
+.wp-block-button .wp-block-button__link:hover { filter: none; }
+
+/* Button arrow (toggle-controlled via has-arrow class) */
+.wp-block-button.has-arrow .wp-block-button__link {
+  overflow: visible;
+  padding-inline-end: calc(var(--wp--preset--spacing--30, .75rem) + 1.25em);
+  position: relative;
+}
+
+.wp-block-button.has-arrow .wp-block-button__link::after {
+  block-size: .6em;
+  border-bottom: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  content: '';
+  display: inline-block;
+  inline-size: .6em;
+  margin-inline-start: .35em;
+  transform: rotate(-45deg);
+  transform-origin: center;
+  transition: margin-inline-start .2s ease;
+}
+
+.wp-block-button.has-arrow .wp-block-button__link:hover::after,
+.wp-block-button.has-arrow .wp-block-button__link:focus-visible::after {
+  margin-inline-start: .55em; /* add a touch more gap on hover */
+}
+
+/* Sweep hover effect (global; no block style required) - Target both core button variants at once to avoid duplication */
+:is(
+  .wp-element-button,
+  .wp-block-button .wp-block-button__link
+) {
+  /* Capture the original text color so it stays stable when the link swaps color on hover */
+  --btn-fg-base: currentColor;
+  --btn-bg: var(--wp--preset--color--primary);
+  --btn-fg: currentColor;
+
+  align-items: center;
+  
+  /* property order: clip → position → repeat → size */
+  background-clip: padding-box;
+  background-image: linear-gradient( 90deg, var(--btn-sweep, currentColor) 0%, var(--btn-sweep, currentColor) 50%, transparent 50% );
+  background-position: 100% 0;
+  background-repeat: no-repeat;
+  background-size: 200% 100%;
+  border-radius: var(--wp--preset--spacing--20, .25rem);
+  display: flex;
+  gap: .2rem;
+  isolation: isolate; /* Ensure pseudo-element can sit beneath content */
+  justify-content: space-between;
+  overflow: hidden;
+  position: relative;
+  transition: background-position .25s ease, color .2s ease, background-color .2s ease, box-shadow .2s ease;
+  will-change: background-position;
+}
+
+/* Animate sweep and flip text color on hover/focus */
+:is(
+  .wp-element-button,
+  .wp-block-button .wp-block-button__link
+):hover,
+:is(
+  .wp-element-button,
+  .wp-block-button .wp-block-button__link
+):focus-visible {
+  background-position: 0 0;
+  color: var(--btn-bg) !important;
+}
+
+/* Utility: no-button-anim (and block style alias is-style-no-button-anim)
+   - Neutralize the sweep/slide overlay and heavy motion
+   - Keep a simple color fade on hover to brand gold */
+.no-button-anim,
+.is-style-no-button-anim {
+  /* Neutralize sweep overlay in both base and hover states
+     so there is no sweep on mouse-enter or mouse-leave */
+  :is(.wp-element-button, .wp-block-button .wp-block-button__link) {
+    /* Kill gradient-based sweep */
+    background-image: none !important;
+    transition: color .18s ease-in-out !important;
+  }
+  
+  /* Back-compat: if any ::before remains, neutralize it */
+  :is(.wp-element-button, .wp-block-button .wp-block-button__link)::before,
+  :is(.wp-element-button, .wp-block-button .wp-block-button__link):hover::before,
+  :is(.wp-element-button, .wp-block-button .wp-block-button__link):focus-visible::before {
+    background: transparent !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  
+  /* Keep just a subtle color fade to gold */
+  :is(.wp-element-button, .wp-block-button .wp-block-button__link):hover,
+  :is(.wp-element-button, .wp-block-button .wp-block-button__link):focus-visible {
+    color: var(--wp--preset--color--gold-500, var(--wp--preset--color--secondary)) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.wp-element-button, .wp-block-button .wp-block-button__link)::before {
+    transform: none;
+    transition: none;  
+  }
+}
+
+

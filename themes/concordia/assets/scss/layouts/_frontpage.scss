@@ -1,0 +1,52 @@
+/* Front page navigation - handles specific differences for this front page. */
+
+.home {
+  .site-header__container {
+    /* Mobile-first: solid white background */
+    background: var(--wp--preset--color--base, #fff) !important;
+    padding-left: 30px !important;
+    padding-right: 30px !important;
+    width: 100% !important;
+  }
+
+  /* Keep desktop admin bar offset logic only on desktop */
+  @media (width >= 1024px) {
+    &.admin-bar {
+      .site-header__container:not(.is-stuck) {
+        transform: translate(-50%, calc(var(--home-header-offset, 25px)));
+      }
+    }
+  }
+
+  /* Mobile and tablet: full-width, square corners, no vertical offset */
+  @media (width < 1024px) {
+    .site-header__container:not(.is-stuck) {
+      border-radius: 0;
+      transform: translate(-50%, 0);
+    }
+    
+    /* Ensure admin-bar does not add offset on tablet/mobile */
+    &.admin-bar {
+      .site-header__container:not(.is-stuck) {
+        transform: translate(-50%, 0);
+      }
+    }
+  }
+
+  .site-header__container.is-stuck {
+    background: var(--wp--preset--color--base, #fff) !important;
+  }
+
+
+  /* Desktop-up: restore gradient header background for non-stuck */
+  @media (width >= 1024px) {
+    /* Front page desktop: no radius */
+    .site-header__container {
+      border-radius: 0 !important;
+    }
+
+    .site-header__container:not(.is-stuck) {
+      background: linear-gradient(to top, rgba(255, 255, 255, 0) 0.01%, rgb(255, 255, 255) 65.38%) !important;
+    }
+  }
+}

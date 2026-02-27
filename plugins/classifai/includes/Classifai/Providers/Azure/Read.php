@@ -1,0 +1,351 @@
+<?php
+/**
+ * Scan PDF files to extract visible text with the AI Vision Read service.
+ *
+ * @since 1.6.1
+ * @package Classifai
+ */
+
+namespace Classifai\Providers\Azure;
+
+use WP_Error;
+use function Classifai\computer_vision_max_filesize;
+use function Classifai\safe_wp_remote_post;
+use function Classifai\safe_wp_remote_get;
+
+/**
+ * Read class
+ *
+ * Connects to AI Vision's Read endpoint to detect text.
+ *
+ * @see https://docs.microsoft.com/en-us/rest/api/cognitiveservices/computervision/recognizeprintedtext/
+ */
+class Read {
+
+	/**
+	 * The AI Vision API path to the Read service.
+	 *
+	 * @var string
+	 */
+	const API_PATH = 'vision/v3.2/read/';
+
+	/**
+	 * ComputerVision settings.
+	 *
+	 * @var array
+	 */
+	private $settings;
+
+	/**
+	 * Attachment ID to process.
+	 *
+	 * @var int
+	 */
+	private $attachment_id;
+
+	/**
+	 * Feature instance.
+	 *
+	 * @var \Classifai\Features\PDFTextExtraction
+	 */
+	private $feature;
+
+	/**
+	 * Constructor
+	 *
+	 * @param array             $settings Computer Vision settings.
+	 * @param int               $attachment_id Attachment ID to process.
+	 * @param PDFTextExtraction $feature Feature instance.
+	 */
+	public function __construct( array $settings, int $attachment_id, $feature ) {
+		$this->settings      = $settings;
+		$this->attachment_id = $attachment_id;
+		$this->feature       = $feature;
+	}
+
+	/**
+	 * Builds the API url.
+	 *
+	 * @param string $path Path to append to API URL.
+	 * @return string
+	 */
+	public function get_api_url( string $path = '' ): string {
+		return sprintf( '%s%s%s', trailingslashit( $this->settings['endpoint_url'] ), static::API_PATH, $path );
+	}
+
+	/**
+	 * Check if Read processing should be applied to the attachment.
+	 *
+	 * @return bool
+	 */
+	public function should_process(): bool {
+		$mime_type          = get_post_mime_type( $this->attachment_id );
+		$matched_extensions = explode( '|', array_search( $mime_type, wp_get_mime_types(), true ) );
+		$process            = false;
+
+		$approved_media_types = [ 'pdf' ];
+
+		foreach ( $matched_extensions as $ext ) {
+			if ( in_array( $ext, $approved_media_types, true ) ) {
+				$process = true;
+			}
+		}
+
+		/**
+		 * Filters whether to run Read processing on this attachment item
+		 *
+		 * @since 1.7.0
+		 * @hook classifai_azure_read_should_process
+		 *
+		 * @param bool $process       Whether to run OCR processing or not.
+		 * @param int  $attachment_id The attachment ID.
+		 *
+		 * @return bool Whether this attachment should have OCR processing.
+		 */
+		return apply_filters( 'classifai_azure_read_should_process', $process, $this->attachment_id );
+	}
+
+	/**
+	 * Call the Azure Read API.
+	 *
+	 * @return object|WP_Error
+	 */
+	public function read_document() {
+		// Check if valid authentication is in place.
+		if ( empty( $this->settings ) || ( isset( $this->settings['authenticated'] ) && false === $this->settings['authenticated'] ) ) {
+			return $this->log_error( new WP_Error( 'auth', esc_html__( 'Please set up valid authentication with Azure.', 'classifai' ) ) );
+		}
+
+		if ( ! $this->should_process() ) {
+			return $this->log_error( new WP_Error( 'process_error', esc_html__( 'Document does not meet processing requirements.', 'classifai' ) ) );
+		}
+
+		$filesize = filesize( get_attached_file( $this->attachment_id ) );
+		if ( ! $filesize || $filesize > computer_vision_max_filesize() ) {
+			return $this->log_error(
+				new WP_Error(
+					'size_error',
+					esc_html(
+						sprintf(
+							// translators: %1$s is the document file size in bytes, %2$s is the current default max filesize in bytes, %3$s is the integer '4 * MB_IN_BYTES'
+							__( 'Document (%1$s bytes) does not meet size requirements. Please ensure it is smaller than the maximum threshold (currently %2$s bytes, defaults to %3$s bytes).', 'classifai' ),
+							! $filesize ? __( 'size not found', 'classifai' ) : $filesize,
+							computer_vision_max_filesize(),
+							4 * MB_IN_BYTES
+						)
+					),
+					$filesize
+				)
+			);
+		}
+
+		/**
+		 * Filters the request arguments sent to Read endpoint.
+		 *
+		 * @since 1.7.0
+		 * @hook classifai_azure_read_request_args
+		 *
+		 * @param array $args          Whether to run OCR processing or not.
+		 * @param int   $attachment_id The attachment ID.
+		 *
+		 * @return array Filtered request arguments.
+		 */
+		$request_args = apply_filters( 'classifai_azure_read_request_args', [], $this->attachment_id );
+
+		$url = add_query_arg(
+			$request_args,
+			$this->get_api_url( 'analyze' )
+		);
+
+		$document_url = wp_get_attachment_url( $this->attachment_id );
+
+		if ( ! $document_url ) {
+			return $this->log_error( new WP_Error( 'invalid_attachment', esc_html__( 'Document does not exist.', 'classifai' ) ) );
+		}
+
+		$response = safe_wp_remote_post(
+			$url,
+			[
+				'body'    => wp_json_encode(
+					[
+						'url' => $document_url,
+					]
+				),
+				'headers' => [
+					'Content-Type'              => 'application/json',
+					'Ocp-Apim-Subscription-Key' => $this->settings['api_key'],
+				],
+			]
+		);
+
+		/**
+		 * Fires after the request to the read endpoint has run.
+		 *
+		 * @since 1.5.0
+		 * @hook classifai_azure_read_after_request
+		 *
+		 * @param array|\WP_Error  $response      Response data or a WP_Error if the request failed.
+		 * @param string           $url           The request URL with query args added.
+		 * @param int              $attachment_id The document ID.
+		 * @param string           $document_url  The document URL.
+		 */
+		do_action( 'classifai_azure_read_after_request', $response, $url, $this->attachment_id, $document_url );
+
+		if ( is_wp_error( $response ) ) {
+			return $this->log_error( $response );
+		}
+
+		if ( 202 === wp_remote_retrieve_response_code( $response ) ) {
+			$operation_url = wp_remote_retrieve_header( $response, 'Operation-Location' );
+
+			if ( ! filter_var( $operation_url, FILTER_VALIDATE_URL ) ) {
+				return $this->log_error( new WP_Error( 'invalid_read_operation_url', esc_html__( 'Operation URL is invalid.', 'classifai' ) ) );
+			}
+
+			return $this->check_read_result( $operation_url );
+		}
+
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( empty( $body['error'] ) || empty( $body['error']['code'] ) || empty( $body['error']['message'] ) ) {
+			return $this->log_error( new WP_Error( 'unknown_read_error', esc_html__( 'Unknown Read error.', 'classifai' ) ) );
+		}
+
+		return $this->log_error( new WP_Error( $body['error']['code'], $body['error']['message'] ) );
+	}
+
+	/**
+	 * Use WP Cron to periodically check the status of the read operation.
+	 *
+	 * @param string $operation_url Operation URL for checking the read status.
+	 * @return WP_Error|null|array
+	 */
+	public function check_read_result( string $operation_url ) {
+		$response = safe_wp_remote_get(
+			$operation_url,
+			[
+				'headers' => [
+					'Ocp-Apim-Subscription-Key' => $this->settings['api_key'],
+				],
+			]
+		);
+
+		set_transient( 'classifai_azure_computer_vision_pdf_text_extraction_check_result_latest_response', $response, DAY_IN_SECONDS * 30 );
+
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+
+		if ( 200 === wp_remote_retrieve_response_code( $response ) ) {
+			$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+			if ( empty( $body['status'] ) ) {
+				return $this->log_error( new WP_Error( 'invalid_read_result', esc_html__( 'Invalid Read result.', 'classifai' ) ) );
+			}
+
+			switch ( $body['status'] ) {
+				case 'notStarted':
+				case 'running':
+					$this->update_status( $body );
+					/**
+					 * Filters the Read retry interval.
+					 *
+					 * @since 1.7.0
+					 * @hook classifai_azure_read_retry_interval
+					 *
+					 * @param int $seconds How many seconds should the interval be? Default 60.
+					 *
+					 * @return int Filtered interval.
+					 */
+					$retry_interval = apply_filters( 'classifai_azure_read_retry_interval', MINUTE_IN_SECONDS );
+					wp_schedule_single_event( time() + $retry_interval, 'classifai_retry_get_read_result', [ $operation_url, $this->attachment_id ] );
+					break;
+				case 'failed':
+					return $this->log_error( new WP_Error( 'failed_read_request', esc_html__( 'The Read operation has failed.', 'classifai' ) ) );
+				case 'succeeded':
+					return $this->update_document_description( $body );
+				default:
+					return $this->log_error( new WP_Error( 'invalid_read_result_status', esc_html__( 'Invalid Read result status.', 'classifai' ) ) );
+			}
+		}
+	}
+
+	/**
+	 * Update document description using text received from Read API.
+	 *
+	 * @param array $data Read result.
+	 * @return WP_Error|array|null
+	 */
+	public function update_document_description( array $data ) {
+		if ( empty( $data['analyzeResult'] ) || empty( $data['analyzeResult']['readResults'] ) ) {
+			return $this->log_error( new WP_Error( 'invalid_read_result', esc_html__( 'The Read result is invalid.', 'classifai' ) ) );
+		}
+
+		/**
+		 * Filter the max pages that can be processed.
+		 *
+		 * @since 1.7.0
+		 * @hook classifai_azure_read_result_max_page
+		 *
+		 * @param int $max_page The maximum pages that are read.
+		 *
+		 * @return int Filtered max pages.
+		 */
+		$max_page = min( apply_filters( 'classifai_azure_read_result_max_page', 2 ), count( $data['analyzeResult']['readResults'] ) );
+
+		$lines_of_text = [];
+
+		for ( $page = 0; $page < $max_page; $page++ ) {
+			foreach ( $data['analyzeResult']['readResults'][ $page ]['lines'] as $line ) {
+				$lines_of_text[] = $line['text'];
+			}
+		}
+
+		/**
+		 * Filter the text result returned from Read API.
+		 *
+		 * @since 1.7.0
+		 * @hook classifai_azure_read_text_result
+		 *
+		 * @param array $lines_of_text Array of text extracted from the response.
+		 * @param int   $attachment_id The attachment ID.
+		 * @param array $data          Read result.
+		 *
+		 * @return array Filtered array of text.
+		 */
+		$lines_of_text = apply_filters( 'classifai_azure_read_text_result', $lines_of_text, $this->attachment_id, $data );
+
+		$update = $this->feature->save( implode( ' ', $lines_of_text ), $this->attachment_id );
+
+		if ( is_wp_error( $update ) ) {
+			return $this->log_error( $update );
+		}
+
+		$this->update_status( $data );
+	}
+
+	/**
+	 * Log error to metadata for troubleshooting.
+	 *
+	 * @param WP_Error $error WP_Error object.
+	 */
+	private function log_error( WP_Error $error ) {
+		update_post_meta( $this->attachment_id, '_classifai_azure_read_error', $error->get_error_message() );
+
+		return $error;
+	}
+
+	/**
+	 * Log the status of read process to database.
+	 *
+	 * @see https://centraluseuap.dev.cognitive.microsoft.com/docs/services/computer-vision-v3-2/operations/5d9869604be85dee480c8750
+	 *
+	 * @param array $data Response body of the read result.
+	 * @return array
+	 */
+	private function update_status( array $data ): array {
+		update_post_meta( $this->attachment_id, '_classifai_azure_read_status', $data );
+
+		return $data;
+	}
+}

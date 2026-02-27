@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="none">
+  <!-- Tablet arch: slightly shallower than desktop, 16px bottom corner radius -->
+  <path
+    d="
+      M0,0
+      H1600
+      V884
+      Q1600,900 1584,900
+      C1000,720 600,720 16,900
+      Q0,900 0,884
+      Z
+    "
+    fill="#ffffff"
+  />
+</svg>
+

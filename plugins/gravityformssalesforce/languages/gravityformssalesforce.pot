@@ -1,0 +1,201 @@
+# Copyright (C) 2025 Gravity Forms
+# This file is distributed under the GPL-3.0+.
+msgid ""
+msgstr ""
+"Project-Id-Version: Gravity Forms Salesforce Add-On 1.1.0\n"
+"Report-Msgid-Bugs-To: https://gravityforms.com/support\n"
+"Last-Translator: Gravity Forms <support@gravityforms.com>\n"
+"Language-Team: Gravity Forms <support@gravityforms.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-06-26T17:58:56+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: gravityformssalesforce\n"
+
+#. Plugin Name of the plugin
+msgid "Gravity Forms Salesforce Add-On"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+msgid "https://gravityforms.com"
+msgstr ""
+
+#. Description of the plugin
+msgid "An add-on to allow your Gravity Forms to map fields to a Salesforce object."
+msgstr ""
+
+#. Author of the plugin
+msgid "Gravity Forms"
+msgstr ""
+
+#: class-gf-salesforce.php:184
+msgid "Send data to Salesforce only when payment is received."
+msgstr ""
+
+#: class-gf-salesforce.php:277
+#: class-gf-salesforce.php:312
+msgid "Salesforce Account"
+msgstr ""
+
+#: class-gf-salesforce.php:278
+msgid "Provide the Consumer Key and Consumer Secret from your Salesforce Connected App."
+msgstr ""
+
+#: class-gf-salesforce.php:283
+msgid "Consumer Key"
+msgstr ""
+
+#: class-gf-salesforce.php:289
+msgid "Consumer Secret"
+msgstr ""
+
+#: class-gf-salesforce.php:295
+msgid "Salesforce Domain"
+msgstr ""
+
+#. translators: %1$s is an opening <a> tag with a link to Salesforce.com. %2$s is the closing </a> tag
+#: class-gf-salesforce.php:314
+msgid "Connect your Salesforce account to allow Gravity Forms to send data to Salesforce. If you don't have a Salesforce account, you can %1$ssign up for one here.%2$s"
+msgstr ""
+
+#: class-gf-salesforce.php:347
+msgid "<div class=\"alert gforms_note_error\">The add-on could not connect using this custom app. The app might be misconfigured or the associated user might not have API access.</div>"
+msgstr ""
+
+#: class-gf-salesforce.php:431
+msgid "Connected to Salesforce account"
+msgstr ""
+
+#: class-gf-salesforce.php:450
+msgid "Disconnect from Salesforce"
+msgstr ""
+
+#: class-gf-salesforce.php:494
+msgid "Unable to connect to Salesforce due to mismatched state."
+msgstr ""
+
+#: class-gf-salesforce.php:501
+msgid "Unable to connect to your Salesforce account."
+msgstr ""
+
+#: class-gf-salesforce.php:525
+msgid "Authentication with Salesforce was unsuccessful."
+msgstr ""
+
+#: class-gf-salesforce.php:528
+msgid " This Salesforce account does not have API access."
+msgstr ""
+
+#: class-gf-salesforce.php:714
+msgid "Access denied."
+msgstr ""
+
+#: class-gf-salesforce.php:749
+msgid "Salesforce Feed Failure"
+msgstr ""
+
+#: class-gf-salesforce.php:767
+msgid "Feed Information"
+msgstr ""
+
+#: class-gf-salesforce.php:771
+msgid "Feed Name"
+msgstr ""
+
+#: class-gf-salesforce.php:776
+#: class-gf-salesforce.php:880
+msgid "Name"
+msgstr ""
+
+#: class-gf-salesforce.php:777
+msgid "Enter a feed name to uniquely identify this setup."
+msgstr ""
+
+#: class-gf-salesforce.php:782
+#: class-gf-salesforce.php:788
+#: class-gf-salesforce.php:881
+msgid "Object Type"
+msgstr ""
+
+#: class-gf-salesforce.php:789
+msgid "Select the object type from your Salesforce account that you want to send data to."
+msgstr ""
+
+#: class-gf-salesforce.php:795
+#: class-gf-salesforce.php:801
+#: class-gf-salesforce.php:806
+msgid "Field Mapping"
+msgstr ""
+
+#: class-gf-salesforce.php:796
+msgid "Map your Gravity Form fields to the Salesforce fields below."
+msgstr ""
+
+#: class-gf-salesforce.php:807
+msgid "Associate fields from your Salesforce object to the appropriate form fields by selecting the appropriate fields from the dropdown list."
+msgstr ""
+
+#: class-gf-salesforce.php:812
+msgid "Attempt to update duplicate records"
+msgstr ""
+
+#: class-gf-salesforce.php:816
+msgid "Update Duplicate Records"
+msgstr ""
+
+#: class-gf-salesforce.php:817
+msgid "If toggled on, the feed will attempt to update records that Salesforce has determined to be duplicates. If toggled off, duplicates will not be updated and if a duplicate is found, an error will be shown in the entry. Duplicate management rules are controlled from your Salesforce account."
+msgstr ""
+
+#: class-gf-salesforce.php:824
+msgid "Feed Conditional Logic"
+msgstr ""
+
+#: class-gf-salesforce.php:829
+#: class-gf-salesforce.php:831
+msgid "Conditional Logic"
+msgstr ""
+
+#: class-gf-salesforce.php:830
+msgid "Enable"
+msgstr ""
+
+#: class-gf-salesforce.php:831
+msgid "When conditional logic is enabled, form submissions will only be sent to Salesforce when the condition is met. When disabled, all form submissions will be sent."
+msgstr ""
+
+#. translators: %s is a string containing the error response from the API.
+#: class-gf-salesforce.php:939
+msgid "Error creating object in Salesforce: %s."
+msgstr ""
+
+#. translators: %s is a string containing the error response from the API.
+#: class-gf-salesforce.php:955
+msgid "Error updating object in Salesforce: %s."
+msgstr ""
+
+#. translators: %1$s is the object type. %2$s is the ID of the updated record.
+#: class-gf-salesforce.php:965
+msgid "Updated %1$s object. ID: %2$s."
+msgstr ""
+
+#. translators: %1$s is the ID of the duplicate record. %2$s is the feed ID.
+#: class-gf-salesforce.php:972
+msgid "Salesforce found a duplicate record (ID: %1$s) but updating is disabled in the feed settings (ID: %2$s)."
+msgstr ""
+
+#. translators: %1$s is the object type. %2$s is the ID of the updated record.
+#: class-gf-salesforce.php:983
+msgid "Created %1$s object in Salesforce. ID: %2$s."
+msgstr ""
+
+#: class-gf-salesforce.php:1092
+msgid "Select an Object Type"
+msgstr ""
+
+#: includes/api/class-gf-salesforce-api.php:249
+msgid "Could not retrieve access token."
+msgstr ""

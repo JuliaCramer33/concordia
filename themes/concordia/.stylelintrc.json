@@ -1,0 +1,35 @@
+{
+  "extends": [
+    "stylelint-config-standard-scss"
+  ],
+  "plugins": [
+    "stylelint-order"
+  ],
+  "rules": {
+    "declaration-block-single-line-max-declarations": null,
+    "selector-class-pattern": null,
+    "custom-property-pattern": null,
+    "alpha-value-notation": null,
+    "color-function-notation": null,
+    "value-keyword-case": [
+      "lower",
+      {
+        "ignoreKeywords": [
+          "currentColor"
+        ]
+      }
+    ],
+    "property-no-vendor-prefix": [
+      true,
+      {
+        "ignoreProperties": [
+          "-webkit-text-size-adjust"
+        ]
+      }
+    ],
+    "selector-not-notation": "complex",
+    "media-feature-range-notation": "context",
+    "no-descending-specificity": null,
+    "order/properties-alphabetical-order": true
+  }
+}

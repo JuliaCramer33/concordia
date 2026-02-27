@@ -1,0 +1,115 @@
+/* Base typography and elements using theme.json tokens only. */
+@use 'tokens' as *;
+
+html {
+  color: $ink;
+  font-family: var(--wp--preset--font-family--source-sans-3);
+  font-synthesis: none; // prevent faux bold/italic
+  line-height: 1.6;
+}
+
+/* Fluid presets: apply only to heading font-size variables */
+:root {
+  /* Headings */
+  --wp--preset--font-size--h-1: clamp(32px, 5.2vw, 64px);
+  --wp--preset--font-size--h-2: clamp(28px, 4.6vw, 56px);
+  --wp--preset--font-size--h-3: clamp(24px, 3.6vw, 40px);
+  --wp--preset--font-size--h-4: clamp(20px, 3vw, 32px);
+  --wp--preset--font-size--h-5: clamp(18px, 2.6vw, 24px);
+  --wp--preset--font-size--h-6: clamp(16px, 2.2vw, 20px);
+}
+
+body {
+  background: var(--wp--preset--color--base, transparent);
+  color: $ink;
+}
+
+a {
+  color: $primary;
+  text-decoration: underline;
+  text-underline-offset: .15em;
+}
+
+a:hover,
+a:focus {
+  color: $primary;
+}
+
+/* Remove default margins from block content wrappers to allow hero tuck */
+.entry-content,
+.wp-block-post-content,
+main.wp-block-group {
+  margin-top: .5rem;
+  padding-top: 0;
+}
+
+/* Headings line-wrapping improvements (sizes still from theme.json) */
+h1, h2, h3, h4, h5, h6,
+.wp-block-heading {
+  hyphens: auto;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+  word-break: normal;
+}
+
+p {
+  margin-block: 0 $space-md;
+}
+
+code, 
+pre {
+  font-family: var(--wp--preset--font-family--monospace);
+}
+
+pre {
+  background: var(--wp--preset--color--neutral-100, rgba(0,0,0,.04));
+  overflow: auto;
+  padding: $space-sm; 
+}
+
+ul, 
+ol {
+  margin-block: 0 $space-md;
+  padding-inline-start: $space-lg;
+}
+
+li {
+  margin-block: .4em;
+}
+
+table {
+  border-collapse: collapse; 
+  width: 100%; 
+}
+
+th, 
+td {
+  border-block-end: 1px solid var(--wp--preset--color--neutral-200, rgba(0,0,0,.1));
+  padding: $space-sm;
+  text-align: start;
+}
+
+tbody tr:nth-child(odd) {
+  background: var(--wp--preset--color--neutral-100, rgba(0,0,0,.04));
+}
+
+img {
+  block-size: auto;
+  height: auto;
+  max-inline-size: 100%;
+}
+
+figure { 
+  margin: 0;
+}
+
+/* Default: no cap; true full/wide behavior */
+.wp-site-blocks { width: 100%; }
+
+/* Cap the canvas only on ultra-wide screens */
+@media (width >= 2400px) {
+  .wp-site-blocks {
+    margin-inline: auto;
+    max-width: 2400px;
+  }
+}

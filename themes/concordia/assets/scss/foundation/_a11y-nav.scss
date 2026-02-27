@@ -1,0 +1,25 @@
+@use 'tokens' as *;
+
+.skip-link { 
+  height: 1px;
+  left: -9999px; 
+  overflow:hidden;
+  position: absolute;
+  width: 1px; 
+}
+
+.skip-link:focus { 
+  background: $paper;
+  color: $ink;
+  height:auto;
+  padding:.5rem 1rem;
+  position: static;
+  width:auto;
+}
+
+[data-cui-nav] a:focus {
+  outline: var(--cui-focus); 
+  outline-offset: 2px; 
+}
+
+

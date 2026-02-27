@@ -1,0 +1,392 @@
+/* Core mechanics */
+.kanahoma-carousel {
+  /* Root variables */
+  --gap: 1rem;
+  --peek: 0px;
+  --spv-mobile: 1;
+  --spv-tablet: 2;
+  --spv-desktop: 4;
+  --step: 1;
+  --visible: 1;
+
+  /* Themeable brand tokens */
+  --accent: var(--kanahoma-carousel-accent, var(--wp--preset--color--primary, #004c23));
+
+  /* Controls */
+  --control-size: 2rem;
+  --control-border: 2px;
+  --chevron-size: .5rem;
+  --chevron-weight: 2px;
+
+  /* Progress */
+  --progress-height: 4px;
+
+  position: relative
+}
+
+.kanahoma-carousel__viewport {
+  overflow: hidden
+}
+
+/* Align parity with core: make full truly span viewport; wide respects theme wide container */
+.kanahoma-carousel.alignfull {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw)
+}
+
+.kanahoma-carousel.alignfull .kanahoma-carousel__viewport {
+  width: 100%;
+  margin: 0
+}
+
+/* Bleed breakout: stretch the viewport to the window edge(s) */
+.kanahoma-carousel[data-bleed="left"] .kanahoma-carousel__viewport {
+  width: calc(50vw + 50%);
+  margin-left: calc(50% - 50vw)
+}
+
+.kanahoma-carousel[data-bleed="right"] .kanahoma-carousel__viewport {
+  width: calc(50vw + 50%);
+  margin-right: calc(50% - 50vw)
+}
+
+.kanahoma-carousel[data-bleed="both"] .kanahoma-carousel__viewport {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw)
+}
+
+.kanahoma-carousel__items {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding-inline: 0;
+  /* no outer padding by default */
+}
+
+/* Remove padding on the bled side(s) so first/last card can touch */
+.kanahoma-carousel[data-bleed="left"] .kanahoma-carousel__items {
+  padding-left: 0
+}
+
+.kanahoma-carousel[data-bleed="right"] .kanahoma-carousel__items {
+  /* Keep peek padding even with bleed-right so last card can be fully viewed */
+  padding-right: calc(clamp(24px, 6vw, 80px) / var(--step, 1));
+}
+
+.kanahoma-carousel[data-bleed="both"] .kanahoma-carousel__items {
+  padding-left: 0;
+  /* Keep peek padding for last card visibility */
+  padding-right: calc(clamp(24px, 6vw, 80px) / var(--step, 1));
+}
+
+.kanahoma-carousel__items>* {
+  flex: 0 0 100%;
+  min-inline-size: 0;
+  min-width: 0;
+  display: block;
+  scroll-snap-align: start
+}
+
+/* Neutralize Gutenberg constrained layout inside the carousel so inner blocks can span the slide */
+.kanahoma-carousel .is-layout-constrained> :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.kanahoma-carousel .wp-block-group.is-layout-constrained,
+.kanahoma-carousel .wp-block-cover.is-layout-constrained,
+.kanahoma-carousel figure.is-layout-constrained {
+  max-width: none;
+  width: 100%;
+}
+
+.kanahoma-carousel .wp-block-group.is-layout-constrained>.wp-block-group__inner-container {
+  max-width: none !important;
+  width: 100%;
+  height: 100%;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.kanahoma-carousel .wp-block-cover__inner-container {
+  max-width: none !important;
+  width: 100%;
+  height: 100%;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0;
+}
+
+.kanahoma-carousel__items {
+  scrollbar-width: none
+}
+
+.kanahoma-carousel__items::-webkit-scrollbar {
+  display: none
+}
+
+/* Gap-safe edge spacers based on JS-computed offsets */
+.kanahoma-carousel[data-bleed="left"] .kanahoma-carousel__items::before,
+.kanahoma-carousel[data-bleed="both"] .kanahoma-carousel__items::before {
+  content: "";
+  flex: 0 0 max(0px, calc(var(--offset-left, 0px) - var(--gap)));
+  margin-right: calc(-1 * var(--gap));
+}
+
+.kanahoma-carousel[data-bleed="right"] .kanahoma-carousel__items::after,
+.kanahoma-carousel[data-bleed="both"] .kanahoma-carousel__items::after {
+  content: "";
+  flex: 0 0 max(0px, calc(var(--offset-right, 0px) - var(--gap)));
+  margin-left: calc(-1 * var(--gap));
+}
+
+/* Disable bleed on mobile */
+@media (max-width:699px) {
+  .kanahoma-carousel[data-bleed] .kanahoma-carousel__viewport {
+    width: 100%;
+    margin: 0;
+  }
+
+  .kanahoma-carousel[data-bleed] .kanahoma-carousel__items::before,
+  .kanahoma-carousel[data-bleed] .kanahoma-carousel__items::after {
+    flex: 0 0 0;
+    margin: 0;
+    content: none;
+  }
+}
+
+/* Disable bleed when JS toggles no-bleed (e.g., step == 1) */
+.kanahoma-carousel.no-bleed[data-bleed] .kanahoma-carousel__viewport {
+  width: 100%;
+  margin: 0;
+}
+
+.kanahoma-carousel.no-bleed[data-bleed] .kanahoma-carousel__items::before,
+.kanahoma-carousel.no-bleed[data-bleed] .kanahoma-carousel__items::after {
+  flex: 0 0 0;
+  margin: 0;
+  content: none;
+}
+
+/* Ensure direct image slides fill and crop */
+.kanahoma-carousel .kanahoma-carousel__items>figure {
+  display: flex
+}
+
+.kanahoma-carousel .kanahoma-carousel__items>figure>img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Only crop when a parent height is explicitly set */
+  object-fit: cover
+}
+
+/* Mode: single or auto with per-breakpoint steps */
+.kanahoma-carousel[data-mode="single"] {
+  --step: 1
+}
+
+.kanahoma-carousel[data-mode="single"] .kanahoma-carousel__items>* {
+  flex-basis: 100%
+}
+
+.kanahoma-carousel[data-mode="auto"] {
+  --step: var(--spv-mobile)
+}
+
+.kanahoma-carousel[data-mode="auto"] .kanahoma-carousel__items {
+  /* Add padding at the end so the last card can scroll fully into view */
+  padding-right: calc(clamp(24px, 6vw, 80px) / var(--step, 1));
+}
+
+.kanahoma-carousel[data-mode="auto"] .kanahoma-carousel__items>* {
+  /* Size items slightly smaller to show peek of next card */
+  /* Subtracting a small amount (80px total divided across all visible items) creates overflow */
+  flex: 0 0 calc(((100% - (var(--step, 1) - 1) * var(--gap)) / var(--step, 1)) - (80px / var(--step, 1)));
+}
+
+/* When only one slide per view, remove peek entirely */
+.kanahoma-carousel.no-peek[data-mode="auto"] .kanahoma-carousel__items {
+  padding-right: 0;
+}
+
+.kanahoma-carousel.no-peek[data-mode="auto"] .kanahoma-carousel__items>* {
+  flex: 0 0 calc((100% - (var(--step, 1) - 1) * var(--gap)) / var(--step, 1));
+}
+
+/* If bleed is set to none, also remove peek subtraction */
+.kanahoma-carousel[data-bleed="none"][data-mode="auto"] .kanahoma-carousel__items {
+  padding-right: 0;
+}
+
+.kanahoma-carousel[data-bleed="none"][data-mode="auto"] .kanahoma-carousel__items>* {
+  flex: 0 0 calc((100% - (var(--step, 1) - 1) * var(--gap)) / var(--step, 1));
+}
+
+@media (min-width:700px) {
+  .kanahoma-carousel[data-mode="auto"] {
+    --step: var(--spv-tablet)
+  }
+}
+
+@media (min-width:1024px) {
+  .kanahoma-carousel[data-mode="auto"] {
+    --step: var(--spv-desktop)
+  }
+}
+
+/* Optional: add a tiny right padding when items fit exactly (set by JS) */
+.kanahoma-carousel.force-overflow .kanahoma-carousel__items {
+  padding-right: var(--peek)
+}
+
+/* Progress */
+.kanahoma-carousel__progress {
+  height: var(--progress-height);
+  color: var(--accent);
+  background: color-mix(in oklab, var(--wp--preset--color--primary) 12%, transparent);
+  border-radius: 999px;
+  overflow: hidden;
+  margin: .5rem 0
+}
+
+.kanahoma-carousel__progress-bar {
+  height: 100%;
+  width: 0%;
+  color: var(--accent);
+  background: var(--wp--preset--color--primary);
+  opacity: .6;
+  transition: width 120ms linear
+}
+
+/* Controls base */
+.kanahoma-carousel__controls {
+  display: flex;
+  gap: .5rem
+}
+
+.kanahoma-carousel__controls {
+  color: var(--accent);
+  margin: 1rem 0;
+}
+
+.kanahoma-carousel__controls button {
+  appearance: none;
+  border: var(--control-border) solid var(--wp--preset--color--primary);
+  background: #fff;
+  width: var(--control-size);
+  height: var(--control-size);
+  padding: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 0;
+  /* hide arrow text, keep aria-label for a11y */
+}
+
+.kanahoma-carousel__controls button:disabled {
+  opacity: .5;
+  cursor: not-allowed
+}
+
+.kanahoma-carousel__controls button:focus-visible {
+  outline: 2px solid var(--wp--preset--color--primary);
+  outline-offset: 2px
+}
+
+/* Chevron icon using borders */
+.kanahoma-carousel__controls button::after {
+  content: "";
+  display: inline-block;
+  width: var(--chevron-size);
+  height: var(--chevron-size);
+  border-top: var(--chevron-weight) solid var(--wp--preset--color--primary);
+  border-right: var(--chevron-weight) solid var(--wp--preset--color--primary);
+}
+
+.kanahoma-carousel__controls .kanahoma-carousel__next::after {
+  transform: rotate(45deg);
+}
+
+.kanahoma-carousel__controls .kanahoma-carousel__prev::after {
+  transform: rotate(-135deg);
+}
+
+.kanahoma-carousel__controls button:hover:not(:disabled) {
+  background: color-mix(in oklab, #fff 85%, var(--accent) 10%)
+}
+
+/* Dragging feedback */
+.kanahoma-carousel.is-dragging {
+  cursor: grabbing;
+}
+
+.kanahoma-carousel.is-dragging * {
+  user-select: none;
+}
+
+/* Placement: top-right (header) */
+.kanahoma-carousel[data-controls-pos="top-right"] .kanahoma-carousel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+
+
+/* Placement: bottom-right (below track) */
+.kanahoma-carousel[data-controls-pos="bottom-right"] .kanahoma-carousel__controls--bottom {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: .5rem;
+}
+
+/* Placement: bottom-left (below track) */
+.kanahoma-carousel[data-controls-pos="bottom-left"] .kanahoma-carousel__controls--bottom {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: .5rem;
+}
+
+.kanahoma-carousel[data-controls-pos="bottom-center"] .kanahoma-carousel__controls--bottom {
+  display: flex;
+  justify-content: center;
+  margin-top: .5rem;
+}
+
+/* Placement: inside-right (overlay) */
+.kanahoma-carousel[data-controls-pos="inside-right"] .kanahoma-carousel__viewport {
+  position: relative
+}
+
+.kanahoma-carousel[data-controls-pos="inside-right"] .kanahoma-carousel__controls--inside {
+  position: absolute;
+  inset: 0 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  align-items: flex-end;
+  justify-content: center;
+  padding: .5rem;
+  /* optional backdrop feel */
+  pointer-events: none;
+}
+
+.kanahoma-carousel[data-controls-pos="inside-right"] .kanahoma-carousel__controls--inside button {
+  pointer-events: auto;
+  background: rgba(255, 255, 255, .9);
+  backdrop-filter: saturate(140%) blur(4px);
+}

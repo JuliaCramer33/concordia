@@ -1,0 +1,44 @@
+/* Equal-height Columns */
+.wp-block-columns.has-equal-height { align-items: stretch !important; }
+.wp-block-columns.has-equal-height > .wp-block-column { display: flex; }
+.wp-block-columns.has-equal-height > .wp-block-column > * {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+/* Helper to push an element to the bottom inside a column */
+.wp-block-columns.has-equal-height .push-bottom { margin-top: auto; }
+
+
+/* Generic equalize utility for grid-based wrappers (e.g., Query Loop Post Template) */
+.u-equalize { grid-auto-rows: 1fr; }
+.u-equalize > * { display: flex; }
+
+/* Card utility: make inner Group fill available height and look like a card */
+.u-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+}
+.u-card .wp-block-buttons { margin-top: auto; }
+
+/* Block Style: Card grid (applies to Post Template items).
+   Make each grid item a flex container; let inner Group stretch.
+   Borders/backgrounds should live on the inner Group (or custom). */
+.wp-block-post-template.is-style-card-grid > li { display: flex; }
+.wp-block-post-template.is-style-card-grid > li > .wp-block-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 100%;
+}
+.wp-block-post-template.is-style-card-grid > li > * { margin: 0; }
+
+/* Block Style: Card (applies to Group)
+   Layout-only: allow the Group to stretch; visual styles (border, radius, bg)
+   should be set by the user via block controls. */
+.wp-block-group.is-style-card { display: flex; flex-direction: column; }
+.wp-block-group.is-style-card .wp-block-buttons { margin-top: auto; }
+
+

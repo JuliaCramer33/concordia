@@ -1,0 +1,14 @@
+node_modules/
+vendor/
+assets/css/
+assets/js/dist/
+css/prod/
+js/prod/
+*.map
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
+
+

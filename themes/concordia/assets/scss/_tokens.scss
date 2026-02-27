@@ -1,0 +1,24 @@
+// Token aliases: thin SCSS helpers pointing to WP CSS variables.
+// Use these aliases in rules, but all values resolve to theme.json presets.
+
+// Colors
+// Base text color should follow the theme.json contrast color
+$ink: var(--wp--preset--color--contrast, #3B3934);
+$paper: var(--wp--preset--color--neutral-0, #fff);
+$primary: var(--wp--preset--color--primary, #0a65cc);
+$muted: var(--wp--preset--color--neutral-600, #4b5563);
+
+// Spacing scale
+$space-xs: var(--wp--preset--spacing--20, .5rem);   // 8px
+$space-sm: var(--wp--preset--spacing--30, .75rem);  // 12px
+$space-md: var(--wp--preset--spacing--40, 1rem);    // 16px
+$space-lg: var(--wp--preset--spacing--50, 1.5rem);  // 24px
+$space-xl: var(--wp--preset--spacing--60, 2rem);    // 32px
+
+// Typography (families only; font sizes are driven by theme.json)
+$font-system: var(--wp--preset--font-family--source-sans-3, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif);
+$font-mono: var(--wp--preset--font-family--monospace, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+
+// Layout widths (containers)
+$container: var(--wp--style--layout--content-size);
+$container-wide: var(--wp--style--layout--wide-size);

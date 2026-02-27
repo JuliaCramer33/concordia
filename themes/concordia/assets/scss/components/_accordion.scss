@@ -1,0 +1,48 @@
+/* Accordions - CSS-only using <details>/<summary> */
+.c-accordion .wp-block-details > summary,
+.c-accordion__summary {
+  align-items: center;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  cursor: pointer;
+  display: flex;
+  gap: var(--wp--preset--spacing--30, .75rem);
+  justify-content: space-between;
+  list-style: none; /* hide default marker in some browsers */
+  padding-bottom: var(--wp--preset--spacing--20, .5rem);
+}
+
+/* Hide default marker (Safari/Chrome) */
+.c-accordion .wp-block-details > summary::-webkit-details-marker,
+.c-accordion__summary::-webkit-details-marker { display: none; }
+
+
+/* Circular chevron icon (mask) aligned to the right */
+.c-accordion .wp-block-details > summary::after,
+.c-accordion__summary::after {
+  /* Compiled CSS lives in css/prod → step back to assets/icons */
+  background: url('../../assets/icons/tailless-line-arrow-left-circle--arrow-keyboard-circle-button-left.svg') no-repeat center / 100% 100%;
+  block-size: 1.5rem;
+  content: '';
+  display: inline-block;
+  inline-size: 1.5rem;
+  margin-inline-start: var(--wp--preset--spacing--20, .5rem);
+  transform: rotate(180deg); /* default: down */
+  transition: transform .2s ease;
+}
+
+.c-accordion .wp-block-details[open] > summary::after,
+details[open] > .c-accordion__summary::after {
+  transform: rotate(0deg); /* open: up */
+}
+
+.c-accordion .wp-block-details__content,
+.c-accordion__panel {
+  padding: 0 var(--wp--preset--spacing--50, 1.5rem) var(--wp--preset--spacing--40, 1rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-accordion .wp-block-details > summary::after,
+  .c-accordion__summary::after { transition: none; }
+}
+
+

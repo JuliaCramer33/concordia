@@ -1,0 +1,209 @@
+/* Editor-only styles to mirror front-end layout without interactivity */
+.editor-styles-wrapper .kanahoma-carousel,
+.wp-block-kanahoma-carousel .kanahoma-carousel {
+  /* Ensure variables available in editor too */
+  --gap: var(--gap, 1rem);
+  --spv-mobile: var(--spv-mobile, 1);
+  --spv-tablet: var(--spv-tablet, 2);
+  --spv-desktop: var(--spv-desktop, 4);
+}
+
+/* Mirror frontend: define --step by breakpoint */
+.editor-styles-wrapper .kanahoma-carousel[data-mode="auto"],
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-mode="auto"] {
+  --step: var(--spv-mobile);
+}
+
+@media (min-width:700px) {
+
+  .editor-styles-wrapper .kanahoma-carousel[data-mode="auto"],
+  .wp-block-kanahoma-carousel .kanahoma-carousel[data-mode="auto"] {
+    --step: var(--spv-tablet);
+  }
+}
+
+@media (min-width:1024px) {
+
+  .editor-styles-wrapper .kanahoma-carousel[data-mode="auto"],
+  .wp-block-kanahoma-carousel .kanahoma-carousel[data-mode="auto"] {
+    --step: var(--spv-desktop);
+  }
+}
+
+/* Items container: acts as scroller only */
+.editor-styles-wrapper .kanahoma-carousel__items,
+.wp-block-kanahoma-carousel .kanahoma-carousel__items {
+  display: block;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+/* Add padding at end in auto mode so last card can scroll fully into view (match frontend) */
+.editor-styles-wrapper .kanahoma-carousel[data-mode="auto"] .kanahoma-carousel__items,
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-mode="auto"] .kanahoma-carousel__items {
+  padding-right: calc(80px / var(--step, 1));
+}
+
+/* Inner layout becomes the single flex row with gap (regular carousel only) */
+.editor-styles-wrapper .kanahoma-carousel:not(.kanahoma-query-carousel) .kanahoma-carousel__items>.block-editor-block-list__layout,
+.wp-block-kanahoma-carousel .kanahoma-carousel:not(.kanahoma-query-carousel) .kanahoma-carousel__items>.block-editor-block-list__layout,
+.editor-styles-wrapper .kanahoma-carousel:not(.kanahoma-query-carousel) .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout,
+.wp-block-kanahoma-carousel .kanahoma-carousel:not(.kanahoma-query-carousel) .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: var(--gap) !important;
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+
+/* Each slide cell wrapper should be a block that fills its flex-basis */
+.editor-styles-wrapper .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout>.block-editor-block-list__block,
+.wp-block-kanahoma-carousel .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout>.block-editor-block-list__block,
+.editor-styles-wrapper .kanahoma-carousel__items>.block-editor-block-list__layout>.block-editor-block-list__block,
+.wp-block-kanahoma-carousel .kanahoma-carousel__items>.block-editor-block-list__layout>.block-editor-block-list__block {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Single mode: 1 per view */
+.editor-styles-wrapper .kanahoma-carousel[data-mode="single"] .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout>*,
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-mode="single"] .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout>*,
+.editor-styles-wrapper .kanahoma-carousel[data-mode="single"] .kanahoma-carousel__items>.block-editor-block-list__layout>*,
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-mode="single"] .kanahoma-carousel__items>.block-editor-block-list__layout>* {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+/* Auto mode: use --step for basis so it matches frontend */
+.editor-styles-wrapper .kanahoma-carousel[data-mode="auto"] .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout>*,
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-mode="auto"] .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout>*,
+.editor-styles-wrapper .kanahoma-carousel[data-mode="auto"] .kanahoma-carousel__items>.block-editor-block-list__layout>*,
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-mode="auto"] .kanahoma-carousel__items>.block-editor-block-list__layout>* {
+  /* Match frontend: size items slightly smaller to show peek of next card */
+  flex: 0 0 calc(((100% - (var(--step, 1) - 1) * var(--gap)) / var(--step, 1)) - (80px / var(--step, 1)));
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Editor: remove peek when only 1 per view */
+.editor-styles-wrapper .kanahoma-carousel.no-peek[data-mode="auto"] .kanahoma-carousel__items {
+  padding-right: 0 !important;
+}
+
+.editor-styles-wrapper .kanahoma-carousel.no-peek[data-mode="auto"] .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout>*,
+.editor-styles-wrapper .kanahoma-carousel.no-peek[data-mode="auto"] .kanahoma-carousel__items>.block-editor-block-list__layout>* {
+  flex: 0 0 100% !important;
+}
+
+/* Make inner blocks fill the slide cell width (not forced height) */
+.editor-styles-wrapper .kanahoma-carousel__items figure.wp-block-image,
+.wp-block-kanahoma-carousel .kanahoma-carousel__items figure.wp-block-image,
+.editor-styles-wrapper .kanahoma-carousel__items .wp-block-group,
+.wp-block-kanahoma-carousel .kanahoma-carousel__items .wp-block-group,
+.editor-styles-wrapper .kanahoma-carousel__items .wp-block-cover,
+.wp-block-kanahoma-carousel .kanahoma-carousel__items .wp-block-cover {
+  width: 100% !important;
+  margin: 0;
+}
+
+.editor-styles-wrapper .kanahoma-carousel__items figure.wp-block-image img,
+.wp-block-kanahoma-carousel .kanahoma-carousel__items figure.wp-block-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Make controls non-interactive in editor so selection works */
+.editor-styles-wrapper .kanahoma-carousel [data-carousel-controls],
+.wp-block-kanahoma-carousel .kanahoma-carousel [data-carousel-controls] {
+  pointer-events: none
+}
+
+/* But allow clicks on the actual buttons so toolbar arrows can scroll */
+.editor-styles-wrapper .kanahoma-carousel [data-carousel-controls] button,
+.wp-block-kanahoma-carousel .kanahoma-carousel [data-carousel-controls] button {
+  pointer-events: auto;
+}
+
+/* Neutralize constrained layout inside editor so inner blocks fill the slide */
+.editor-styles-wrapper .wp-block-kanahoma-carousel .is-layout-constrained> :where(:not(.alignleft):not(.alignright):not(.alignfull)),
+.wp-block-kanahoma-carousel .is-layout-constrained> :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Full width adjustments for editor */
+.editor-styles-wrapper .wp-block-kanahoma-carousel,
+.wp-block-kanahoma-carousel {
+  max-width: 100% !important;
+}
+
+.editor-styles-wrapper .wp-block-kanahoma-carousel .kanahoma-carousel,
+.wp-block-kanahoma-carousel .kanahoma-carousel {
+  /* Allow style width controls to take effect; do not force width */
+  max-width: 100% !important;
+}
+
+.editor-styles-wrapper .kanahoma-carousel__viewport,
+.wp-block-kanahoma-carousel .kanahoma-carousel__viewport {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.editor-styles-wrapper .kanahoma-carousel__items,
+.wp-block-kanahoma-carousel .kanahoma-carousel__items {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.editor-styles-wrapper .kanahoma-carousel__items>.block-editor-inner-blocks,
+.wp-block-kanahoma-carousel .kanahoma-carousel__items>.block-editor-inner-blocks {
+  width: 100% !important;
+  min-width: 100% !important;
+  display: block !important;
+}
+
+.editor-styles-wrapper .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout,
+.wp-block-kanahoma-carousel .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout,
+.editor-styles-wrapper .kanahoma-carousel__items>.block-editor-block-list__layout,
+.wp-block-kanahoma-carousel .kanahoma-carousel__items>.block-editor-block-list__layout {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+/* Bleed spacers for editor (mirror frontend) */
+.editor-styles-wrapper .kanahoma-carousel[data-bleed="left"] .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout::before,
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-bleed="left"] .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout::before,
+.editor-styles-wrapper .kanahoma-carousel[data-bleed="left"] .kanahoma-carousel__items>.block-editor-block-list__layout::before,
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-bleed="left"] .kanahoma-carousel__items>.block-editor-block-list__layout::before,
+.editor-styles-wrapper .kanahoma-carousel[data-bleed="both"] .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout::before,
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-bleed="both"] .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout::before,
+.editor-styles-wrapper .kanahoma-carousel[data-bleed="both"] .kanahoma-carousel__items>.block-editor-block-list__layout::before,
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-bleed="both"] .kanahoma-carousel__items>.block-editor-block-list__layout::before {
+  content: "";
+  flex: 0 0 max(0px, calc(var(--offset-left, 0px) - var(--gap)));
+  margin-right: calc(-1 * var(--gap));
+}
+
+.editor-styles-wrapper .kanahoma-carousel[data-bleed="right"] .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout::after,
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-bleed="right"] .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout::after,
+.editor-styles-wrapper .kanahoma-carousel[data-bleed="right"] .kanahoma-carousel__items>.block-editor-block-list__layout::after,
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-bleed="right"] .kanahoma-carousel__items>.block-editor-block-list__layout::after,
+.editor-styles-wrapper .kanahoma-carousel[data-bleed="both"] .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout::after,
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-bleed="both"] .kanahoma-carousel__items>.block-editor-inner-blocks>.block-editor-block-list__layout::after,
+.editor-styles-wrapper .kanahoma-carousel[data-bleed="both"] .kanahoma-carousel__items>.block-editor-block-list__layout::after,
+.wp-block-kanahoma-carousel .kanahoma-carousel[data-bleed="both"] .kanahoma-carousel__items>.block-editor-block-list__layout::after {
+  content: "";
+  flex: 0 0 max(0px, calc(var(--offset-right, 0px) - var(--gap)));
+  margin-left: calc(-1 * var(--gap));
+}
+
+.editor-styles-wrapper .kanahoma-carousel[data-controls-pos="bottom-left"] .kanahoma-carousel__controls--bottom {
+  width: 100%;
+  justify-content: flex-start;
+  margin-top: .5rem;
+}

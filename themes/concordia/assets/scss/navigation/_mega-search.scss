@@ -1,0 +1,302 @@
+.mega-search {
+  /* Themeable tokens */
+  --ms-radius: .75rem;
+  --ms-accent: var(--wp--preset--color--primary);
+  --ms-bg: var(--wp--preset--color--base, #fff);
+  --ms-border: var(--wp--preset--color--primary);
+
+  /* Wrapper width token so we can constrain the control inside its column */
+  --ms-wrap-width: clamp(320px, 42vw, 760px);
+
+  /* Motion tokens */
+  --ms-closed-w: 44px;
+  --ms-ease: cubic-bezier(.2,.7,.2,1);
+
+  margin: 0;
+  position: absolute; /* detach from normal flow when closed */
+  transition: width 260ms var(--ms-ease), right 260ms var(--ms-ease);
+  width: 0;          /* closed: no footprint in the layout */
+  will-change: width, right;
+  z-index: 1200;     /* sit above nav text within header */
+
+  &.is-open {
+    position: fixed;
+    width: var(--ms-width, 600px);
+    &[data-grow="left"] { left: var(--ms-left, 0); }
+    &[data-grow="right"] { right: var(--wp--preset--spacing--20, 16px); }
+
+    .mega-search__field-wrap {
+      background: var(--ms-accent);
+      border-color: var(--ms-accent);
+      width: 100%;
+    }
+
+    .mega-search__input {
+      width: 100%;
+    }
+    
+    .mega-search__clear { 
+      display: inline-flex !important; 
+      margin-right: 0.25rem; }
+  }
+
+  /* Closing state: keep fixed positioning but animate widths back to closed */
+  &.is-open.is-closing {
+    overflow: hidden;
+    width: 0;
+    .mega-search__field-wrap { width: 100%; }
+    .mega-search__input { display: block; }
+    .mega-search__clear { display: none !important; }
+  }
+
+  &.is-closing .mega-search__results {
+    display: none !important;
+  }
+  
+  /* Hard guard: if not open, never show results panel (prevents squished remnant) */
+  &:not(.is-open) .mega-search__results {
+    display: none !important;
+  }
+
+  /* Directional anchoring for inner field so width grows from chosen edge */
+  &[data-grow="right"] .mega-search__field-wrap { margin-left: auto; margin-right: 0; }
+  &[data-grow="left"] .mega-search__field-wrap { margin-left: 0; margin-right: auto; }
+}
+
+/* External trigger (Icon block) */
+.mega-search-trigger {
+  align-items: center;
+  color: var(--wp--preset--color--primary);
+  cursor: pointer;
+  display: inline-flex;
+  height: 44px;
+  justify-content: center;
+  width: 44px;
+}
+
+/* Flattened BEM-style element selectors (no &__ nesting) */
+.mega-search__field-wrap {
+  align-items: center;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: var(--ms-radius);
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  gap: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  width: 0;
+}
+
+.mega-search__input {
+  border: none;
+  border-radius: 0;
+  flex: 1 1 auto;
+  font-size: 1rem;
+  padding: 0.75rem;
+}
+
+/* Clear button styled as small bordered chip */
+.mega-search__clear {
+  align-items: center;
+  background: var(--wp--preset--color--primary);
+  border: 0;
+  border-radius: 0;
+  color: #fff;
+  display: none;
+  font-size: .8em;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 1;
+  padding: 0.35rem 0.75rem;
+  white-space: nowrap;
+}
+
+.mega-search__results {
+  background: #fff;
+  border: 1px solid var(--wp--preset--color--primary);
+  border-radius: .75rem;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+  left: 0;
+  margin-top: 0.75rem;
+  max-height: min(60vh, 520px);
+  min-height: 2rem;
+  opacity: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 2rem;
+  position: absolute;
+  top: calc(100% + 8px);
+  transform: none;
+  transform: translateY(4px);
+  transition: opacity 180ms ease, transform 180ms ease;
+  width: 100%;
+  z-index: 9999;
+}
+.mega-search__results:empty { display: none; }
+.mega-search__results:not(:empty) { opacity: 1; transform: translateY(0); }
+
+.mega-search__results.is-fadeout {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.mega-search__empty {
+  opacity: .8;
+  padding: 0 4px;
+}
+
+.mega-search__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+@media (width > 680px) {
+  .mega-search__grid .mega-search__result { flex: 1 1 calc(50% - 10px); }
+}
+
+@media (width <= 680px) {
+  .mega-search__grid .mega-search__result { flex: 1 1 100%; }
+}
+
+.mega-search__results-title {
+  color: var(--wp--preset--color--primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1em;
+  padding: 0 4px;
+}
+
+.mega-search__result {
+  background: #fff;
+  border: 1px solid color-mix(in srgb, var(--wp--preset--color--primary) 18%, transparent);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  color: var(--wp--preset--color--contrast);
+  display: block;
+  padding: 10px 12px;
+  position: relative;
+  text-decoration: none;
+}
+.mega-search__result + .mega-search__result { margin-top: 6px; }
+.mega-search__grid .mega-search__result + .mega-search__result { margin-top: 0; }
+
+.mega-search__result:hover {
+  background: color-mix(in srgb, var(--wp--preset--color--primary) 6%, #fff);
+  border-color: var(--wp--preset--color--primary);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+}
+
+.mega-search__result:focus-visible {
+  outline: 2px solid var(--wp--preset--color--gold-500);
+  outline-offset: 2px;
+}
+
+.mega-search__result::after{
+  color: var(--wp--preset--color--primary);
+  content: "›";
+  font-weight: 700;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.mega-search__title {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 4px;
+  margin-right: 20px;
+}
+
+.mega-search__excerpt {
+  -webkit-box-orient: vertical;
+  display: block;
+  display: -webkit-box;
+  font-size: 0.92rem;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  line-height: 1.35;
+  margin-top: 4px;
+  opacity: 0.85;
+  overflow: hidden;
+}
+
+.mega-search__more {
+  display: inline-flex;
+  font-weight: 700;
+  margin-top: 2rem;
+}
+
+.mega-search__more:hover {
+  color: color-mix(in srgb, var(--wp--preset--color--primary) 86%, #000);
+  text-decoration-thickness: 2px;
+}
+
+.mega-search__more-arrow {
+  display: inline-block;
+  font-weight: 800;
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mega-search { transition: none; }
+  .mega-search .mega-search__field-wrap { transition: none; }
+  .mega-search__results { transition: none; }
+}
+
+.mega-search__close {
+  align-items: center;
+  background: var(--wp--preset--color--primary);
+  border: 1px solid var(--wp--preset--color--primary);
+  border-radius: 8px;
+  color: #fff;
+  display: inline-flex;
+  font-weight: 600;
+  gap: 0.25rem;
+  padding: 0.35rem 0.6rem;
+  position: absolute;
+  right: -3.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+  /* Hide native WebKit search cancel so it doesn't overlap our Close chip */
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-decoration {
+    appearance: none;
+    display: none;
+  }
+
+  /* tiny type pill for live results (safe to keep) */
+  .mega-search__chip {
+    background: #fff;
+    border: 1px solid var(--wp--preset--color--gold-500);
+    border-radius: 999px;
+    color: var(--wp--preset--color--contrast);
+    display: inline-block;
+    font-size: 12px;
+    line-height: 1;
+    margin-right: 8px;
+    padding: 4px 8px;
+    vertical-align: middle;
+  }
+ 
+  /* Header layout guards: prevent wrap and keep height stable */
+  .site-header__bar .wp-block-group {
+    align-items: center;
+
+    /* the inner flex wrapper that holds nav + search */
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .site-header__bar .wp-block-navigation {
+    flex: 1 1 auto;
+    min-width: 0; /* allow flexbox to shrink without forcing wrap */
+  }

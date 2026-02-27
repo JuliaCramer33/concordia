@@ -1,0 +1,32 @@
+.weather-atlas {
+  &-wrapper {
+    border-radius: 16px 0;
+    bottom: 0;
+    margin-top: 0;
+    position: absolute;
+    right: 0;
+  }
+
+  &-header {
+    display: none;
+  }
+
+  &-footer {
+    display: none;
+  }
+
+  &-body {
+   text-shadow: none;
+
+   .temp {
+      font-weight: 700;
+   }
+
+   .current_text {
+    color: #9F6C00;
+    letter-spacing: 5px;
+    margin-top: 10px;
+    text-transform: uppercase !important;
+   }
+  }
+}

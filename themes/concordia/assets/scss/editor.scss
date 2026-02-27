@@ -1,0 +1,37 @@
+@use 'tokens';
+@use 'foundation/foundation';
+@use 'components/components';
+
+
+.editor-styles-wrapper {
+  font-family: var(--wp--preset--font-family--source-sans-3);
+  font-synthesis: none;
+  line-height: 1.6;
+}
+
+.editor-styles-wrapper .container,
+.editor-styles-wrapper .container--wide { 
+  max-inline-size: 100%;
+}
+
+.editor-styles-wrapper .wp-block {
+  max-width: none;
+}
+
+/* Normalize headings/lists margins for parity */
+.editor-styles-wrapper h1, 
+.editor-styles-wrapper h2, 
+.editor-styles-wrapper h3,
+.editor-styles-wrapper h4, 
+.editor-styles-wrapper h5,
+.editor-styles-wrapper h6 {
+  margin-block: 0 tokens.$space-sm;
+}
+
+.editor-styles-wrapper p, 
+.editor-styles-wrapper ul,
+.editor-styles-wrapper ol {
+  margin-block: 0 tokens.$space-md; 
+}
+
+
