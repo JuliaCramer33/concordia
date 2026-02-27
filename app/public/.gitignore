@@ -1,0 +1,36 @@
+# WordPress
+/wp-config.php
+/advanced-cache.php
+/backup-db/
+/backups/
+/blogs.dir/
+/cache/
+/debug.log
+/upgrade/
+/uploads/
+/wp-cache-config.php
+/et-cache/
+/gallery/
+/sitemap.xml
+/sitemap.xml.gz
+/web.config
+.htaccess
+
+# Theme development
+/themes/teach-us/node_modules/
+/themes/teach-us/vendor/
+/themes/teach-us/npm-debug.log
+/themes/teach-us/yarn-error.log
+/themes/teach-us/dist/
+/themes/teach-us/build/
+/themes/teach-us/css/prod/
+/themes/teach-us/js/prod/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
